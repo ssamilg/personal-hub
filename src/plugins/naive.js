@@ -5,7 +5,10 @@ import {
 } from 'naive-ui';
 
 const naive = create({
-  components: [NButton, NConfigProvider],
+  components: [
+    NButton,
+    NConfigProvider,
+  ],
 });
 
 export default naive;
