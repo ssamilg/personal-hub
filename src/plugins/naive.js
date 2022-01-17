@@ -1,12 +1,11 @@
-import { createApp } from 'vue';
 import {
   create,
   NButton,
+  NConfigProvider,
 } from 'naive-ui';
 
 const naive = create({
-  components: [NButton],
+  components: [NButton, NConfigProvider],
 });
 
-const app = createApp();
-app.use(naive);
+export default naive;
