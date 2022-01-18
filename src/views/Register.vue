@@ -1,9 +1,11 @@
 <script>
 import { onMounted, reactive, toRefs } from 'vue';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default {
   name: 'Register',
   setup() {
+    const auth = getAuth();
     const state = reactive({
       name: null,
       surname: null,
@@ -15,7 +17,22 @@ export default {
       console.log('mounted');
     });
 
-    return { ...toRefs(state) };
+    const submit = () => {
+      createUserWithEmailAndPassword(auth, state.email, state.password)
+        .then((response) => {
+          console.log(response);
+          // response.user
+          //   .updateProfile({
+          //     displayName: `${state.name} ${state.surname}`,
+          //   })
+          //   .then(() => {});
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    };
+
+    return { ...toRefs(state), submit };
   },
 };
 </script>
@@ -43,7 +60,7 @@ export default {
 
               <n-row class="justify-center block-btn">
                 <n-space vertical>
-                  <n-button type="primary" size="large">
+                  <n-button type="primary" size="large" @click="submit">
                     Register
                   </n-button>
 
