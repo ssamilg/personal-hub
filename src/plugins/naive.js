@@ -7,6 +7,7 @@ import {
   NRow,
   NCol,
   NInput,
+  NSpace,
   NConfigProvider,
 } from 'naive-ui';
 
@@ -18,6 +19,7 @@ const naive = create({
     NRow,
     NCol,
     NInput,
+    NSpace,
     NGridItem,
     NConfigProvider,
   ],
