@@ -2,9 +2,11 @@
 import { onMounted, reactive, toRefs } from 'vue';
 
 export default {
-  name: 'Login',
+  name: 'Register',
   setup() {
     const state = reactive({
+      name: null,
+      surname: null,
       email: null,
       password: null,
     });
@@ -19,12 +21,16 @@ export default {
 </script>
 
 <template>
-  <div id="login-page">
+  <div id="register-page">
     <n-row class="justify-center align-center fill-height">
       <n-col :span="6" class="form-card">
-        <n-card title="Login" size="huge">
+        <n-card title="Register" size="huge">
           <n-row>
             <n-space vertical>
+              <n-input v-model:value="name" type="text" size="large" placeholder="Name"/>
+
+              <n-input v-model:value="surname" type="text" size="large" placeholder="Surname"/>
+
               <n-input v-model:value="email" type="text" size="large" placeholder="E-mail"/>
 
               <n-input
@@ -38,11 +44,11 @@ export default {
               <n-row class="justify-center block-btn">
                 <n-space vertical>
                   <n-button type="primary" size="large">
-                    Login
+                    Register
                   </n-button>
 
-                  <n-button text @click="$router.push('/Register')">
-                    Don't have an account ? Click to Register.
+                  <n-button text @click="$router.push('/Login')">
+                    Already have an account ? Click to Login.
                   </n-button>
                 </n-space>
               </n-row>
@@ -59,7 +65,7 @@ export default {
 </template>
 
 <style lang="scss">
-#login-page {
+#register-page {
   height: 100%;
 
   .form-card {
