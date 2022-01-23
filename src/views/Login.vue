@@ -41,7 +41,7 @@ export default {
                     Login
                   </n-button>
 
-                  <n-button text @click="$router.push('/Register')">
+                  <n-button text @click="$router.push('/register')">
                     Don't have an account ? Click to Register.
                   </n-button>
                 </n-space>
