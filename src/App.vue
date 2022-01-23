@@ -1,9 +1,17 @@
 <script>
-import { defineComponent } from 'vue';
+import { useStore } from 'vuex';
+import { defineComponent, onMounted } from 'vue';
+import { getAuth } from 'firebase/auth';
 // import { darkTheme } from 'naive-ui';
 
 export default defineComponent({
   setup() {
+    const auth = getAuth();
+    const store = useStore();
+
+    onMounted(() => {
+      store.dispatch('setAuth', auth);
+    });
     // return { darkTheme };
   },
 });
@@ -11,7 +19,9 @@ export default defineComponent({
 
 <template>
   <n-config-provider :theme="darkTheme" class="fill-height">
-    <router-view/>
+    <n-message-provider placement="bottom-right">
+      <router-view/>
+    </n-message-provider>
   </n-config-provider>
 </template>
 
