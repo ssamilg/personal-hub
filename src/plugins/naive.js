@@ -8,7 +8,10 @@ import {
   NCol,
   NInput,
   NSpace,
+  NAlert,
+  NIcon,
   NConfigProvider,
+  NMessageProvider,
 } from 'naive-ui';
 
 const naive = create({
@@ -20,8 +23,11 @@ const naive = create({
     NCol,
     NInput,
     NSpace,
+    NAlert,
+    NIcon,
     NGridItem,
     NConfigProvider,
+    NMessageProvider,
   ],
 });
 
