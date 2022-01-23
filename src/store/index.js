@@ -1,5 +1,9 @@
 import { createStore } from 'vuex';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {
+  updateProfile,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from 'firebase/auth';
 
 // const moduleAuth = {
 //   state: () => {
@@ -12,6 +16,11 @@ export default createStore({
   state: {
     auth: {},
     user: {},
+  },
+  getters: {
+    getCurrentUser: (state) => {
+      return state.auth.currentUser;
+    },
   },
   mutations: {
     setAuth(state, value) {
@@ -28,8 +37,15 @@ export default createStore({
     setUser({ commit }, value) {
       commit('setUser', value);
     },
+    registerUserToLocalStorage(_, id, token) {
+      localStorage.setItem('user-id', id);
+      localStorage.setItem('auth-token', token);
+    },
     register(_, value) {
       return createUserWithEmailAndPassword(this.state.auth, value.email, value.password);
+    },
+    login(_, value) {
+      return signInWithEmailAndPassword(this.state.auth, value.email, value.password);
     },
     updateUser(_, value) {
       console.log(value);

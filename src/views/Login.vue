@@ -1,19 +1,32 @@
 <script>
-import { onMounted, reactive, toRefs } from 'vue';
+import { useStore } from 'vuex';
+import { reactive, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
+import useAlertMessage from '@/mixins/useAlertMessage';
 
 export default {
   name: 'Login',
   setup() {
+    const store = useStore();
+    const router = useRouter();
+    const { showAlertMessage } = useAlertMessage();
     const state = reactive({
       email: null,
       password: null,
     });
 
-    onMounted(() => {
-      console.log('mounted');
-    });
+    const login = () => {
+      store.dispatch('login', state)
+        .then((response) => {
+          store.dispatch('registerUserToLocalStorage', response.user.uid, response.user.accessToken);
+          router.push('/');
+        })
+        .catch((err) => {
+          showAlertMessage('error', err.message);
+        });
+    };
 
-    return { ...toRefs(state) };
+    return { ...toRefs(state), login };
   },
 };
 </script>
@@ -37,7 +50,7 @@ export default {
 
               <n-row class="justify-center block-btn">
                 <n-space vertical>
-                  <n-button type="primary" size="large">
+                  <n-button type="primary" size="large" @click="login">
                     Login
                   </n-button>
 
@@ -51,10 +64,6 @@ export default {
         </n-card>
       </n-col>
     </n-row>
-    <div style="border:2px solid red">
-      {{ email }} -
-      {{ password }}
-    </div>
   </div>
 </template>
 

@@ -1,17 +1,24 @@
 <script>
 import { useStore } from 'vuex';
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent } from 'vue';
 import { getAuth } from 'firebase/auth';
+import { useRouter } from 'vue-router';
 // import { darkTheme } from 'naive-ui';
 
 export default defineComponent({
   setup() {
     const auth = getAuth();
     const store = useStore();
+    const router = useRouter();
+    const userId = localStorage.getItem('user-id');
+    store.dispatch('setAuth', auth);
 
-    onMounted(() => {
-      store.dispatch('setAuth', auth);
-    });
+    if (!userId) {
+      router.push('/login');
+    } else {
+      router.push('/');
+    }
+
     // return { darkTheme };
   },
 });

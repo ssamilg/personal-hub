@@ -1,35 +1,31 @@
 <script>
+import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import useAlertMessage from '@/mixins/useAlertMessage';
-
 import {
   toRefs,
   reactive,
-  onMounted,
-  defineComponent,
 } from 'vue';
 
-export default defineComponent({
+export default {
   name: 'Register',
   setup() {
     const store = useStore();
+    const router = useRouter();
+    const { showAlertMessage } = useAlertMessage();
     const state = reactive({
       name: null,
       surname: null,
       email: null,
       password: null,
     });
-    const { showAlertMessage } = useAlertMessage();
-
-    onMounted(() => {
-      console.log('mounted');
-      console.log(store.state.auth);
-    });
 
     const submit = () => {
       store.dispatch('register', state)
-        .then(() => {
+        .then((response) => {
           store.dispatch('updateUser', { displayName: `${state.name} ${state.surname}` });
+          store.dispatch('registerUserToLocalStorage', response.user.uid, response.user.accessToken);
+          router.push('/');
         })
         .catch((err) => {
           showAlertMessage('error', err.message);
@@ -38,7 +34,7 @@ export default defineComponent({
 
     return { ...toRefs(state), submit };
   },
-});
+};
 </script>
 
 <template>
@@ -78,10 +74,6 @@ export default defineComponent({
         </n-card>
       </n-col>
     </n-row>
-    <div style="border:2px solid red">
-      {{ email }} -
-      {{ password }}
-    </div>
   </div>
 </template>
 
