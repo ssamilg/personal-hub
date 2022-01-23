@@ -1,40 +1,44 @@
 <script>
-import { onMounted, reactive, toRefs } from 'vue';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useStore } from 'vuex';
+import useAlertMessage from '@/mixins/useAlertMessage';
 
-export default {
+import {
+  toRefs,
+  reactive,
+  onMounted,
+  defineComponent,
+} from 'vue';
+
+export default defineComponent({
   name: 'Register',
   setup() {
-    const auth = getAuth();
+    const store = useStore();
     const state = reactive({
       name: null,
       surname: null,
       email: null,
       password: null,
     });
+    const { showAlertMessage } = useAlertMessage();
 
     onMounted(() => {
       console.log('mounted');
+      console.log(store.state.auth);
     });
 
     const submit = () => {
-      createUserWithEmailAndPassword(auth, state.email, state.password)
-        .then((response) => {
-          console.log(response);
-          // response.user
-          //   .updateProfile({
-          //     displayName: `${state.name} ${state.surname}`,
-          //   })
-          //   .then(() => {});
+      store.dispatch('register', state)
+        .then(() => {
+          store.dispatch('updateUser', { displayName: `${state.name} ${state.surname}` });
         })
         .catch((err) => {
-          console.log(err.message);
+          showAlertMessage('error', err.message);
         });
     };
 
     return { ...toRefs(state), submit };
   },
-};
+});
 </script>
 
 <template>
