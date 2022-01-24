@@ -16,6 +16,7 @@ export default createStore({
   state: {
     auth: {},
     user: {},
+    darkTheme: false,
   },
   getters: {
     getCurrentUser: (state) => {
@@ -29,6 +30,9 @@ export default createStore({
     setUser(state, value) {
       state.user = value;
     },
+    switchTheme(state) {
+      state.darkTheme = !state.darkTheme;
+    },
   },
   actions: {
     setAuth({ commit }, value) {
@@ -36,6 +40,9 @@ export default createStore({
     },
     setUser({ commit }, value) {
       commit('setUser', value);
+    },
+    switchTheme({ commit }) {
+      commit('switchTheme');
     },
     registerUserToLocalStorage(_, id, token) {
       localStorage.setItem('user-id', id);
