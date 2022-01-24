@@ -20,6 +20,11 @@ const routes = [
     name: 'Register',
     component: () => import('../views/Register.vue'),
   },
+  {
+    path: '/debtCalculator',
+    name: 'Debt Calculator',
+    component: () => import('../components/DebtCalculator.vue'),
+  },
 ];
 
 const router = createRouter({
