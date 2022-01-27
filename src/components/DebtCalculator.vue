@@ -1,14 +1,52 @@
 <script>
-import { reactive, toRefs } from 'vue';
+import { computed, reactive, toRefs } from 'vue';
+import { PlusRound, MinusRound, SaveFilled } from '@vicons/material';
 
 export default {
   name: 'DebtCalculator',
+  components: { PlusRound, MinusRound, SaveFilled },
   setup() {
     const state = reactive({
       monthlyDebtList: [],
+      debtTableHeaders: [
+        { value: 'name', text: 'Debt Name' },
+        { value: 'amount', text: 'Debt Amount' },
+      ],
+      debtItems: [
+        { id: '0', name: 'kredit kard', amount: 31 },
+        { id: '1', name: 'eraba', amount: 4 },
+        { id: '2', name: 'eraba', amount: 4 },
+        { id: '3', name: 'eraba', amount: 4 },
+        { id: '4', name: 'eraba', amount: 4 },
+        { id: '5', name: 'eraba', amount: 4 },
+        { id: '6', name: 'eraba', amount: 4 },
+        { id: '7', name: 'eraba', amount: 4 },
+        { id: '8', name: 'eraba', amount: 4 },
+        { id: '9', name: 'eraba', amount: 4 },
+        { id: '10', name: 'eraba', amount: 4 },
+        { id: '11', name: 'eraba', amount: 4 },
+        { id: '12', name: 'eraba', amount: 4 },
+      ],
     });
 
-    return { ...toRefs(state) };
+    const debtTotal = computed(() => {
+      return state.debtItems.map((i) => i.amount).reduce((acc, curr) => acc + curr);
+    });
+
+    const removeItem = (id) => {
+      state.debtItems = state.debtItems.filter((i) => i.id !== id);
+    };
+
+    const addNewItem = () => {
+      state.debtItems.push({ id: Number(state.debtItems.slice(-1)[0].id) + 1, name: '', amount: null });
+    };
+
+    return {
+      ...toRefs(state),
+      removeItem,
+      addNewItem,
+      debtTotal,
+    };
   },
 };
 </script>
@@ -18,7 +56,83 @@ export default {
     <n-row class="align-center justify-center fill-height">
       <n-col :span="22" class="debts-card-wrapper">
         <n-card size="large" class="debts-card">
-          DEBTSSS
+          <n-table :single-line="false">
+            <thead>
+              <tr>
+                <th v-for="header in debtTableHeaders" :key="header.value">
+                  {{ header.text }}
+                </th>
+
+                <th>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="item in debtItems" :key="item.id" >
+                <td>
+                  <n-input
+                    v-model:value="item.name"
+                    placeholder="Debt Name"
+                    type="text"
+                  />
+                </td>
+
+                <td>
+                  <n-input-number
+                    v-model:value="item.amount"
+                    placeholder="Debt Amount"
+                  />
+                </td>
+
+                <td>
+                  <n-row class="justify-center">
+                    <n-col :span="12">
+                      <n-row class="justify-center">
+                        <n-button strong secondary circle @click="removeItem(item.id)">
+                          <template #icon>
+                            <n-icon><MinusRound/></n-icon >
+                          </template>
+                        </n-button>
+                      </n-row>
+                    </n-col>
+                  </n-row>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  Total
+                </td>
+                <td>
+                  {{ debtTotal }}
+                </td>
+              </tr>
+            </tbody>
+          </n-table>
+
+          {{ debtItems }}
+          <template #action>
+            <n-row class="justify-end">
+              <n-col :span="1">
+                <n-button strong secondary circle @click="addNewItem">
+                  <template #icon>
+                    <n-icon><PlusRound/></n-icon >
+                  </template>
+                </n-button>
+              </n-col>
+
+              <n-col :span="2">
+                <n-button strong type="success">
+                  <template #icon>
+                    <n-icon><SaveFilled/></n-icon >
+                  </template>
+                  Save
+                </n-button>
+              </n-col>
+            </n-row>
+          </template>
         </n-card>
       </n-col>
     </n-row>
@@ -34,6 +148,13 @@ export default {
 
     .debts-card {
       height: 100%;
+
+    }
+
+    .n-card {
+      .n-card__content {
+        overflow: auto;
+      }
     }
   }
 }
