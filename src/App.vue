@@ -49,7 +49,7 @@ export default defineComponent({
     :theme="theme"
     class="fill-height"
   >
-    <n-message-provider placement="bottom-right">
+    <n-message-provider placement="top-right">
       <n-layout position="absolute">
         <n-layout-header>
           <PHNavbar/>
