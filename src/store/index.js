@@ -1,9 +1,17 @@
 import { createStore } from 'vuex';
+import firestoreDB from '@/plugins/firebase';
 import {
   updateProfile,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
+import {
+  query,
+  where,
+  addDoc,
+  getDocs,
+  collection,
+} from 'firebase/firestore';
 
 // const moduleAuth = {
 //   state: () => {
@@ -15,7 +23,6 @@ import {
 export default createStore({
   state: {
     auth: {},
-    user: {},
     darkTheme: false,
   },
   getters: {
@@ -57,6 +64,23 @@ export default createStore({
     updateUser(_, value) {
       console.log(value);
       return updateProfile(this.state.auth.currentUser, value);
+    },
+    fetchDataWithQuery(_, params) {
+      console.log(params);
+      const { key, operator, value } = params.where;
+      const collectionRef = collection(firestoreDB, params.collection);
+      const q = query(collectionRef, where(key, operator, value));
+
+      return getDocs(q);
+    },
+    fetchAllData(_, params) {
+      console.log(params);
+      const collectionRef = collection(firestoreDB, params.collection);
+
+      return getDocs(collectionRef);
+    },
+    addNewData(_, params) {
+      return addDoc(collection(firestoreDB, params.collection), params.payload);
     },
   },
   modules: {
