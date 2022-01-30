@@ -1,11 +1,20 @@
 <script>
-import { computed, reactive, toRefs } from 'vue';
+import {
+  toRefs,
+  reactive,
+  computed,
+  onMounted,
+} from 'vue';
 import { PlusRound, MinusRound, SaveFilled } from '@vicons/material';
+import useAlertMessage from '@/mixins/useAlertMessage';
+import { useStore } from 'vuex';
 
 export default {
   name: 'DebtCalculator',
   components: { PlusRound, MinusRound, SaveFilled },
   setup() {
+    const store = useStore();
+    const { showAlertMessage } = useAlertMessage();
     const state = reactive({
       monthlyDebtList: [],
       debtTableHeaders: [
@@ -28,6 +37,38 @@ export default {
         { id: '12', name: 'eraba', amount: 4 },
       ],
     });
+    const currentUser = store.getters.getCurrentUser;
+
+    const fetchDebtData = () => {
+      const queryParams = {
+        collection: 'debts',
+        where: {
+          key: 'users',
+          operator: 'array-contains',
+          value: currentUser.uid.toString(),
+        },
+      };
+
+      store.dispatch('fetchDataWithQuery', queryParams)
+        .then((querySnapshot) => {
+          console.log(querySnapshot);
+          querySnapshot.forEach((doc) => {
+            store.dispatch('fetchAllData', { collection: `debts/${doc.id}/debt_items` })
+              .then((res) => {
+                console.log(res);
+                res.forEach((item) => {
+                  console.log(item.id, ' => ', item.data());
+                });
+              });
+
+            console.log(doc.id, ' => ', doc.data());
+          });
+        });
+    };
+
+    onMounted(() => {
+      fetchDebtData();
+    });
 
     const debtTotal = computed(() => {
       return state.debtItems.map((i) => i.amount).reduce((acc, curr) => acc + curr);
@@ -41,11 +82,40 @@ export default {
       state.debtItems.push({ id: Number(state.debtItems.slice(-1)[0].id) + 1, name: '', amount: null });
     };
 
+    const validateData = () => {
+      let validation = false;
+
+      if (state.debtItems.every((i) => (i.name && i.name !== '' && i.name !== ' ')
+        && (i.amount && i.amount !== null && i.amount > 0))) {
+        validation = true;
+      }
+
+      return validation;
+    };
+
+    const saveTable = () => {
+      if (validateData()) {
+        const params = {
+          collection: 'debts',
+          payload: {
+            debt_items: state.debtItems,
+          },
+        };
+
+        store.dispatch('addNewData', params);
+
+        console.log(params);
+      } else {
+        showAlertMessage('warning', 'Please fill all the fields...');
+      }
+    };
+
     return {
       ...toRefs(state),
       removeItem,
       addNewItem,
       debtTotal,
+      saveTable,
     };
   },
 };
@@ -90,7 +160,7 @@ export default {
                   <n-row class="justify-center">
                     <n-col :span="12">
                       <n-row class="justify-center">
-                        <n-button strong secondary circle @click="removeItem(item.id)">
+                        <n-button type="error" strong secondary circle @click="removeItem(item.id)">
                           <template #icon>
                             <n-icon><MinusRound/></n-icon >
                           </template>
@@ -108,6 +178,15 @@ export default {
                 <td>
                   {{ debtTotal }}
                 </td>
+                <td>
+                  <n-row class="justify-center">
+                    <n-button type="success" strong secondary circle @click="addNewItem">
+                      <template #icon>
+                        <n-icon><PlusRound/></n-icon >
+                      </template>
+                    </n-button>
+                  </n-row>
+                </td>
               </tr>
             </tbody>
           </n-table>
@@ -115,16 +194,8 @@ export default {
           {{ debtItems }}
           <template #action>
             <n-row class="justify-end">
-              <n-col :span="1">
-                <n-button strong secondary circle @click="addNewItem">
-                  <template #icon>
-                    <n-icon><PlusRound/></n-icon >
-                  </template>
-                </n-button>
-              </n-col>
-
               <n-col :span="2">
-                <n-button strong type="success">
+                <n-button strong type="success" @click="saveTable">
                   <template #icon>
                     <n-icon><SaveFilled/></n-icon >
                   </template>
