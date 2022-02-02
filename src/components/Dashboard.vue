@@ -2,8 +2,8 @@
   <div class="hello">
     <n-row class="justify-center align-center fill-height">
       <n-col :span="4" class="form-card">
-        <n-card @click="$router.push('/debtCalculator')">
-          DEBT CALCULATOR
+        <n-card @click="$router.push('/debtManagement')">
+          DEBT MANAGEMENT
         </n-card>
       </n-col>
     </n-row>

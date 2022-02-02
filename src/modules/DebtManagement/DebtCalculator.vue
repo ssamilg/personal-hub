@@ -22,19 +22,13 @@ export default {
         { value: 'amount', text: 'Debt Amount' },
       ],
       debtItems: [
-        { id: '0', name: 'kredit kard', amount: 31 },
-        { id: '1', name: 'eraba', amount: 4 },
-        { id: '2', name: 'eraba', amount: 4 },
+        { id: '0', name: 'kredit kard', amount: 30 },
+        { id: '1', name: 'eraba', amount: 40 },
+        { id: '2', name: 'eraba', amount: 45 },
         { id: '3', name: 'eraba', amount: 4 },
         { id: '4', name: 'eraba', amount: 4 },
         { id: '5', name: 'eraba', amount: 4 },
-        { id: '6', name: 'eraba', amount: 4 },
-        { id: '7', name: 'eraba', amount: 4 },
-        { id: '8', name: 'eraba', amount: 4 },
-        { id: '9', name: 'eraba', amount: 4 },
-        { id: '10', name: 'eraba', amount: 4 },
-        { id: '11', name: 'eraba', amount: 4 },
-        { id: '12', name: 'eraba', amount: 4 },
+
       ],
     });
     const currentUser = store.getters.getCurrentUser;
@@ -51,7 +45,6 @@ export default {
 
       store.dispatch('fetchDataWithQuery', queryParams)
         .then((querySnapshot) => {
-          console.log(querySnapshot);
           querySnapshot.forEach((doc) => {
             store.dispatch('fetchAllData', { collection: `debts/${doc.id}/debt_items` })
               .then((res) => {
@@ -212,7 +205,7 @@ export default {
 
 <style lang="scss">
 #debt-calculator {
-  height: 95vh;
+  height: 100%;
 
   .debts-card-wrapper {
     height: 90%;

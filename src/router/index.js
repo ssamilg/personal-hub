@@ -21,9 +21,9 @@ const routes = [
     component: () => import('../views/Register.vue'),
   },
   {
-    path: '/debtCalculator',
-    name: 'Debt Calculator',
-    component: () => import('../components/DebtCalculator.vue'),
+    path: '/debtManagement',
+    name: 'Debt Management',
+    component: () => import('../modules/DebtManagement/DebtManagement.vue'),
   },
 ];
 
