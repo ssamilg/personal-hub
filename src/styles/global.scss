@@ -11,6 +11,17 @@
   flex-direction: column;
 }
 
+// CUSTOM HELPERS
+.text-link {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  transition: text-decoration 5s;
+}
+
 // FLEX HELPERS
 .flex-grow {
   flex-grow: 1;
