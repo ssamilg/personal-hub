@@ -26,8 +26,6 @@ export default defineComponent({
 
     if (!userId) {
       router.push('/login');
-    } else {
-      router.push('/');
     }
 
     watch(() => store.state.darkTheme,
@@ -82,56 +80,6 @@ export default defineComponent({
       height: 95vh;
       background: rgba(#8DCECC, .5);
     }
-  }
-
-  .align-center {
-    align-items: center;
-  }
-
-  .justify-center {
-    justify-content: center;
-  }
-
-  .justify-end {
-    justify-content: flex-end;
-  }
-
-  .fill-height {
-    height: 100%;
-  }
-
-  .text-align-right {
-    text-align: right;
-  }
-
-  .text-align-center {
-    text-align: center;
-  }
-
-  .text-align-left {
-    text-align: left;
-  }
-
-  // TODO refactor these styles
-  ::-webkit-scrollbar {
-    width: 6px !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #26262A;
-    border-radius: 50px;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 50px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #444;
-    border-radius: 50px;
   }
 }
 </style>
