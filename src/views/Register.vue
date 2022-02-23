@@ -39,41 +39,47 @@ export default {
 
 <template>
   <div id="register-page">
-    <n-row class="justify-center align-center fill-height">
-      <n-col :span="6" class="form-card">
+    <div class="ph-row justify-center align-center fill-height">
+      <div class="ph-col xs10 md6 lg4 form-card">
         <n-card title="Register" size="huge">
-          <n-row>
-            <n-space vertical>
-              <n-input v-model:value="name" type="text" size="large" placeholder="Name"/>
+          <div class="ph-row justify-center align-center fill-height mb-2">
+            <n-input v-model:value="name" type="text" size="large" placeholder="Name"/>
+          </div>
 
-              <n-input v-model:value="surname" type="text" size="large" placeholder="Surname"/>
+          <div class="ph-row justify-center align-center fill-height mb-2">
+            <n-input v-model:value="surname" type="text" size="large" placeholder="Surname"/>
+          </div>
 
-              <n-input v-model:value="email" type="text" size="large" placeholder="E-mail"/>
+          <div class="ph-row justify-center align-center fill-height mb-2">
+            <n-input v-model:value="email" type="text" size="large" placeholder="E-mail"/>
+          </div>
 
-              <n-input
-                v-model:value="password"
-                size="large"
-                type="password"
-                show-password-on="mousedown"
-                placeholder="Password"
-              />
+          <div class="ph-row justify-center align-center fill-height mb-2">
+            <n-input
+              v-model:value="password"
+              size="large"
+              type="password"
+              show-password-on="mousedown"
+              placeholder="Password"
+            />
+          </div>
 
-              <n-row class="justify-center block-btn">
-                <n-space vertical>
-                  <n-button type="primary" size="large" @click="submit">
-                    Register
-                  </n-button>
+          <div class="ph-row fill-block">
+            <div class="ph-col flex-grow">
+              <n-button type="primary" size="large" @click="submit">
+                Register
+              </n-button>
+            </div>
+          </div>
 
-                  <n-button text @click="$router.push('/Login')">
-                    Already have an account ? Click to Login.
-                  </n-button>
-                </n-space>
-              </n-row>
-            </n-space>
-          </n-row>
+          <div class="ph-row justify-center fill-block mt-2">
+            <div class="text-link" @click="$router.push('/Login')">
+              Already have an account ? Click to Login.
+            </div>
+          </div>
         </n-card>
-      </n-col>
-    </n-row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -84,16 +90,6 @@ export default {
   .form-card {
     .n-card .n-card-header .n-card-header__main {
       text-align: center;
-    }
-
-    .n-space {
-      width: 100%;
-    }
-
-    .block-btn {
-      .n-button {
-        width: 100%;
-      }
     }
   }
 }
