@@ -1,11 +1,11 @@
 <script>
 // import { useStore } from 'vuex';
-import Dashboard from '@/components/Dashboard.vue';
+import PHDashboard from '@/components/PHDashboard.vue';
 
 export default {
   name: 'Home',
   components: {
-    Dashboard,
+    PHDashboard,
   },
   setup() {
     // const store = useStore();
@@ -15,13 +15,13 @@ export default {
 
 <template>
   <div class="home">
-    <Dashboard/>
+    <PHDashboard/>
   </div>
 </template>
 
 <style lang="scss">
 .home {
-  height: 95vh;
+  // height: 95vh;
   padding: 24px;
 }
 </style>

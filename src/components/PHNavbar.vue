@@ -81,7 +81,6 @@ export default defineComponent({
 #ph-navbar {
   height: 5vh;
   padding-right: 6px;
-  // padding: 4px;
 
   .n-card {
     height: 5vh;
