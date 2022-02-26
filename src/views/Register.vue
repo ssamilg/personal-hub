@@ -40,7 +40,7 @@ export default {
 <template>
   <div id="register-page">
     <div class="ph-row justify-center align-center fill-height">
-      <div class="ph-col xs10 md6 lg4 form-card">
+      <div class="ph-col xs10 md6 lg3 form-card">
         <n-card title="Register" size="huge">
           <div class="ph-row justify-center align-center fill-height mb-2">
             <n-input v-model:value="name" type="text" size="large" placeholder="Name"/>
