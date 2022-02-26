@@ -31,6 +31,10 @@
   flex-shrink: 1;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .align-center {
   align-items: center;
 }
@@ -70,6 +74,7 @@
 }
 
 ::-webkit-scrollbar-track {
+  // background: var(--n-color);
   background: #26262A;
   border-radius: 50px;
 }
