@@ -1,4 +1,5 @@
 <script>
+import { useRouter } from 'vue-router';
 import { reactive, toRefs } from '@vue/reactivity';
 import {
   AppsSharp,
@@ -18,10 +19,21 @@ export default {
     AutoAwesomeMosaicSharp,
   },
   setup() {
+    const router = useRouter();
     const state = reactive({
       dashboardCards: [
-        { id: 0, name: 'Finance', icon: 'AccountBalanceSharp' },
-        { id: 1, name: 'Entertainment', icon: 'AutoAwesomeMosaicSharp' },
+        {
+          id: 0,
+          name: 'Finance',
+          icon: 'AccountBalanceSharp',
+          action: () => { router.push('/Finance'); },
+        },
+        {
+          id: 1,
+          name: 'Entertainment',
+          icon: 'AutoAwesomeMosaicSharp',
+          action: () => { router.push('/Fun'); },
+        },
         { id: 2, name: 'TODO\'s', icon: 'ChecklistSharp' },
         { id: 3, name: 'Projects', icon: 'AppsSharp' },
         { id: 4, name: 'Tools', icon: 'BuildSharp' },
@@ -42,7 +54,7 @@ export default {
         v-for="card in dashboardCards" :key="card.id"
         class="ph-col xs12 md3"
       >
-        <n-card class="ma-1">
+        <n-card class="ma-1" @click="card.action()">
           <div class="ph-row align-center">
             <div class="ph-col pr-3">
               <n-icon size="36">
