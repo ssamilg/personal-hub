@@ -12,6 +12,7 @@ import { getAuth } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import PHNavbar from '@/components/PHNavbar.vue';
 import { darkTheme } from 'naive-ui';
+import DarkThemeVariables from '@/styles/darkThemeVariables';
 
 export default defineComponent({
   components: { PHNavbar },
@@ -50,7 +51,7 @@ export default defineComponent({
     const isLoggedIn = computed(() => {
       return store.state.isLoggedIn;
     });
-    return { ...toRefs(state), isLoggedIn };
+    return { ...toRefs(state), isLoggedIn, DarkThemeVariables };
   },
 });
 </script>
@@ -58,6 +59,7 @@ export default defineComponent({
 <template>
   <n-config-provider
     :theme="theme"
+    :theme-overrides="DarkThemeVariables"
     class="fill-height"
   >
     <n-message-provider placement="top-right">
@@ -75,6 +77,8 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+@use 'styles/global' as global;
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
