@@ -1,7 +1,9 @@
 <script>
 import { useStore } from 'vuex';
 import {
+  computed,
   defineComponent,
+  onMounted,
   reactive,
   toRefs,
   watch,
@@ -22,10 +24,18 @@ export default defineComponent({
       theme: null,
     });
 
+    onMounted(() => {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches && !store.state.darkTheme) {
+        store.dispatch('switchTheme');
+      }
+    });
+
     store.dispatch('setAuth', auth);
 
     if (!userId) {
       router.push('/login');
+    } else {
+      store.dispatch('setIsLoggedIn', true);
     }
 
     watch(() => store.state.darkTheme,
@@ -37,7 +47,10 @@ export default defineComponent({
         }
       });
 
-    return { ...toRefs(state) };
+    const isLoggedIn = computed(() => {
+      return store.state.isLoggedIn;
+    });
+    return { ...toRefs(state), isLoggedIn };
   },
 });
 </script>
@@ -49,7 +62,7 @@ export default defineComponent({
   >
     <n-message-provider placement="top-right">
       <n-layout position="absolute">
-        <n-layout-header>
+        <n-layout-header v-if="isLoggedIn">
           <PHNavbar/>
         </n-layout-header>
 
@@ -73,12 +86,12 @@ export default defineComponent({
   .n-layout {
     &-header {
       height: 5vh;
-      background: rgba(#8DCECC, .7);
+      // background: rgba(#8DCECC, .7);
     }
 
     &-content {
       height: 95vh;
-      background: rgba(#8DCECC, .5);
+      // background: rgba(#8DCECC, .5);
     }
   }
 }

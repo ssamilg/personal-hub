@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 import firestoreDB from '@/plugins/firebase';
 import {
+  signOut,
   updateProfile,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -23,6 +24,7 @@ import {
 export default createStore({
   state: {
     auth: {},
+    isLoggedIn: false,
     darkTheme: false,
   },
   getters: {
@@ -40,6 +42,9 @@ export default createStore({
     switchTheme(state) {
       state.darkTheme = !state.darkTheme;
     },
+    setIsLoggedIn(state, value) {
+      state.isLoggedIn = value;
+    },
   },
   actions: {
     setAuth({ commit }, value) {
@@ -48,18 +53,25 @@ export default createStore({
     setUser({ commit }, value) {
       commit('setUser', value);
     },
+    setIsLoggedIn({ commit }, value) {
+      commit('setIsLoggedIn', value);
+    },
     switchTheme({ commit }) {
       commit('switchTheme');
     },
     registerUserToLocalStorage(_, id, token) {
       localStorage.setItem('user-id', id);
       localStorage.setItem('auth-token', token);
+      this.dispatch('setIsLoggedIn', true);
     },
     register(_, value) {
       return createUserWithEmailAndPassword(this.state.auth, value.email, value.password);
     },
     login(_, value) {
       return signInWithEmailAndPassword(this.state.auth, value.email, value.password);
+    },
+    logout() {
+      return signOut(this.state.auth);
     },
     updateUser(_, value) {
       console.log(value);
