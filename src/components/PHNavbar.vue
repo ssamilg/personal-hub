@@ -1,6 +1,7 @@
 <script>
 import { useStore } from 'vuex';
-import { DarkModeFilled, DarkModeOutlined } from '@vicons/material';
+import { useRouter } from 'vue-router';
+import { DarkModeFilled, DarkModeOutlined, LogOutOutlined } from '@vicons/material';
 import {
   computed,
   defineComponent,
@@ -11,11 +12,13 @@ import {
 export default defineComponent({
   name: 'PHNavbar',
   components: {
+    LogOutOutlined,
     DarkModeFilled,
     DarkModeOutlined,
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
     const state = reactive({
       navbarItems: [
         { title: 'LOGO' },
@@ -34,9 +37,18 @@ export default defineComponent({
       store.dispatch('switchTheme');
     };
 
+    const logout = () => {
+      localStorage.removeItem('user-id');
+      localStorage.removeItem('auth-token');
+      store.dispatch('logout');
+      store.dispatch('setIsLoggedIn', false);
+      router.push('/login');
+    };
+
     return {
       switchTheme,
       darkTheme,
+      logout,
       ...toRefs(state),
     };
   },
@@ -63,11 +75,19 @@ export default defineComponent({
 
       <n-grid-item>
         <div class="ph-row justify-end align-center fill-height">
-          <n-button strong secondary size="small" @click="switchTheme">
+          <n-button class="mr-1" strong secondary size="small" @click="switchTheme">
             <template #icon>
               <n-icon>
                 <DarkModeFilled v-if="darkTheme"/>
                 <DarkModeOutlined v-else/>
+              </n-icon>
+            </template>
+          </n-button>
+
+          <n-button strong secondary size="small" @click="logout">
+            <template #icon>
+              <n-icon>
+                <LogOutOutlined/>
               </n-icon>
             </template>
           </n-button>
@@ -81,6 +101,7 @@ export default defineComponent({
 #ph-navbar {
   height: 5vh;
   padding-right: 6px;
+  background-color: var(--n-color);
 
   .n-card {
     height: 5vh;
