@@ -21,9 +21,14 @@ const routes = [
     component: () => import('../views/Register.vue'),
   },
   {
-    path: '/debtManagement',
-    name: 'Debt Management',
-    component: () => import('../modules/DebtManagement/DebtManagement.vue'),
+    path: '/finance',
+    name: 'Finance',
+    component: () => import('../modules/Finance/index.vue'),
+  },
+  {
+    path: '/fun',
+    name: 'Fun',
+    component: () => import('../modules/Fun/index.vue'),
   },
 ];
 
