@@ -30,7 +30,7 @@ export default {
         },
         {
           id: 1,
-          name: 'Entertainment',
+          name: 'Fun',
           icon: 'AutoAwesomeMosaicSharp',
           action: () => { router.push('/Fun'); },
         },
