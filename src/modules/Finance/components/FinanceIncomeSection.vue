@@ -61,11 +61,6 @@ export default {
       state.addIncomeMode = true;
     };
 
-    const cancelAddingIncomeItem = () => {
-      state.newIncomeItem = JSON.parse(JSON.stringify(state.baseIncomeItem));
-      state.addIncomeMode = false;
-    };
-
     const saveNewIncomeItem = () => {
       const params = {
         collection: `finance/${props.financeCollectionId}/income_list`,
@@ -90,7 +85,6 @@ export default {
       ...toRefs(state),
       addIncomeItem,
       saveNewIncomeItem,
-      cancelAddingIncomeItem,
     };
   },
 };
@@ -171,7 +165,7 @@ export default {
             <div class="ph-row mt-4">
               <div class="ph-col flex-grow"/>
 
-              <n-button type="info" ghost class="mr-2" @click="cancelAddingIncomeItem">
+              <n-button type="info" ghost class="mr-2" @click="addIncomeMode = false">
                 Back
               </n-button>
 
