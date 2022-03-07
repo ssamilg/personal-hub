@@ -1,25 +1,28 @@
 <script>
-import { FullscreenSharp } from '@vicons/material';
 import { reactive, toRefs } from '@vue/reactivity';
+import { FullscreenSharp } from '@vicons/material';
+import FinanceIncomeSection from './components/FinanceIncomeSection.vue';
 
 export default {
   name: 'Finance',
   components: {
     FullscreenSharp,
+    FinanceIncomeSection,
   },
   setup() {
     const state = reactive({
-      cards: {},
+      isCardExpanded: false,
+      expandedCard: {},
+      modalCardStyle: {
+        height: '90vh',
+        width: '90%',
+      },
     });
 
-    const maximizeCard = (elementId) => {
-      console.log(elementId);
-      // const card = document.getElementById(elementId);
-      // console.log(card);
-      // card.style.zIndex = 9;
-      // card.style.position = 'absolute';
-      // card.style.width = '98%';
-      // card.style.height = '96%';
+    const maximizeCard = (card) => {
+      console.log(card);
+      state.isCardExpanded = true;
+      state.expandedCard.title = card;
     };
 
     return { ...toRefs(state), maximizeCard };
@@ -31,60 +34,14 @@ export default {
   <div id="finance-wrapper">
     <div class="ph-row ph-section">
       <div class="ph-col xs12 md6 pr-1">
-        <n-card id="income-card" title="INCOME">
+        <n-card title="INCOME">
           <template #header-extra>
             <n-icon size="24" @click="maximizeCard('income-card')">
               <FullscreenSharp/>
             </n-icon>
           </template>
 
-          <div class="ph-row fill-height">
-            <div class="ph-col xs12 md4 pr-1">
-              <div class="pie-placeholder">
-                Pie chart
-              </div>
-            </div>
-
-            <div class="ph-col md8 xs12 pl-1">
-              <n-list bordered>
-                <n-list-item>
-                  <div class="ph-row">
-                    <div class="ph-col flex-grow">
-                      Salary
-                    </div>
-
-                    <div class="ph-col">
-                      1000
-                    </div>
-                  </div>
-                </n-list-item>
-
-                <n-list-item>
-                  <div class="ph-row">
-                    <div class="ph-col flex-grow">
-                      Freelance
-                    </div>
-
-                    <div class="ph-col">
-                      500
-                    </div>
-                  </div>
-                </n-list-item>
-
-                <n-list-item>
-                  <div class="ph-row">
-                    <div class="ph-col flex-grow">
-                      Total
-                    </div>
-
-                    <div class="ph-col">
-                      1500
-                    </div>
-                  </div>
-                </n-list-item>
-              </n-list>
-            </div>
-          </div>
+          <FinanceIncomeSection/>
         </n-card>
       </div>
 
@@ -102,6 +59,27 @@ export default {
         </n-card>
       </div>
     </div>
+
+    <n-modal v-model:show="isCardExpanded">
+       <n-card
+        :title="expandedCard.title"
+        :style="modalCardStyle"
+        class="modal-card"
+        size="huge"
+        aria-modal="true"
+        transform-origin="center"
+      >
+        <template #header-extra>
+          Oops!
+        </template>
+
+        <FinanceIncomeSection/>
+
+        <template #footer>
+          Footer
+        </template>
+      </n-card>
+    </n-modal>
   </div>
 </template>
 
@@ -120,6 +98,12 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .modal-card {
+    border: 2px solid red;
+    height: 90%;
+    width: 90%;
   }
 
   .ph-section {
