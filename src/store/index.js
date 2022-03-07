@@ -26,6 +26,7 @@ export default createStore({
     auth: {},
     isLoggedIn: false,
     darkTheme: false,
+    userId: null,
   },
   getters: {
     getCurrentUser: (state) => {
@@ -45,6 +46,9 @@ export default createStore({
     setIsLoggedIn(state, value) {
       state.isLoggedIn = value;
     },
+    setUserId(state, value) {
+      state.userId = value;
+    },
   },
   actions: {
     setAuth({ commit }, value) {
@@ -55,6 +59,9 @@ export default createStore({
     },
     setIsLoggedIn({ commit }, value) {
       commit('setIsLoggedIn', value);
+    },
+    setUserId({ commit }, value) {
+      commit('setUserId', value);
     },
     switchTheme({ commit }) {
       commit('switchTheme');
@@ -78,7 +85,7 @@ export default createStore({
       return updateProfile(this.state.auth.currentUser, value);
     },
     fetchDataWithQuery(_, params) {
-      console.log(params);
+      // https://firebase.google.com/docs/firestore/query-data/queries
       const { key, operator, value } = params.where;
       const collectionRef = collection(firestoreDB, params.collection);
       const q = query(collectionRef, where(key, operator, value));

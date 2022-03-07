@@ -42,6 +42,7 @@ export default defineComponent({
       localStorage.removeItem('auth-token');
       store.dispatch('logout');
       store.dispatch('setIsLoggedIn', false);
+      store.dispatch('setUserId', null);
       router.push('/login');
     };
 

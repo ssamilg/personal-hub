@@ -37,6 +37,7 @@ export default defineComponent({
       router.push('/login');
     } else {
       store.dispatch('setIsLoggedIn', true);
+      store.dispatch('setUserId', userId);
     }
 
     watch(() => store.state.darkTheme,
