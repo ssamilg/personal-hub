@@ -19,20 +19,21 @@ export default {
     const store = useStore();
     const { showAlertMessage } = useAlertMessage();
     const state = reactive({
-      incomeList: [
-        {
-          id: 0,
-          name: 'Salary',
-          amount: 1000,
-          currency: 'USD',
-          period: 0,
-        },
-      ],
+      incomeList: [],
+      newIncomeItem: null,
+      baseIncomeItem: {
+        name: '',
+        amount: null,
+        currency: '',
+        period: null,
+      },
       incomePeriods: [
-        { id: 0, name: 'Monthly' },
-        { id: 1, name: 'Quarterly' },
-        { id: 2, name: 'Yearly' },
+        { value: '1', label: 'One Time' },
+        { value: '30', label: 'Monthly' },
+        { value: '120', label: 'Quarterly' },
+        { value: '365', label: 'Yearly' },
       ],
+      addIncomeMode: false,
     });
 
     const fetchIncomeList = () => {
@@ -56,10 +57,41 @@ export default {
     });
 
     const addIncomeItem = () => {
-
+      state.newIncomeItem = JSON.parse(JSON.stringify(state.baseIncomeItem));
+      state.addIncomeMode = true;
     };
 
-    return { ...toRefs(state), addIncomeItem };
+    const cancelAddingIncomeItem = () => {
+      state.newIncomeItem = JSON.parse(JSON.stringify(state.baseIncomeItem));
+      state.addIncomeMode = false;
+    };
+
+    const saveNewIncomeItem = () => {
+      const params = {
+        collection: `finance/${props.financeCollectionId}/income_list`,
+        payload: state.newIncomeItem,
+      };
+
+      store.dispatch('addNewData', params)
+        .then((res) => {
+          console.log(res);
+          fetchIncomeList();
+          showAlertMessage('success', 'Success !');
+        })
+        .catch((err) => {
+          showAlertMessage('error', err.message);
+        })
+        .finally(() => {
+          state.addIncomeMode = false;
+        });
+    };
+
+    return {
+      ...toRefs(state),
+      addIncomeItem,
+      saveNewIncomeItem,
+      cancelAddingIncomeItem,
+    };
   },
 };
 </script>
@@ -67,54 +99,96 @@ export default {
 <template>
   <div id="finance-income-section">
     <div class="ph-row fill-height">
-      <div class="ph-col xs12 md4 pr-1">
-        <div class="pie-placeholder">
-          Pie chart
+        <div class="ph-col xs12 md4 pr-1">
+          <div class="pie-placeholder">
+            Pie chart
+          </div>
         </div>
-      </div>
 
-      <div class="ph-col md8 xs12 pl-1">
-        <n-list bordered>
-          <n-list-item
-            v-for="item in incomeList"
-            :key="item.id"
-          >
+        <template v-if="!addIncomeMode">
+          <div class="ph-col md8 xs12 pl-1">
+            <n-list bordered>
+              <n-list-item
+                v-for="item in incomeList"
+                :key="item.id"
+              >
+                <div class="ph-row">
+                  <div class="ph-col flex-grow">
+                    {{ item.name }}
+                  </div>
+
+                  <div class="ph-col">
+                    {{ item.amount }}
+                  </div>
+                </div>
+              </n-list-item>
+
+              <n-list-item>
+                <div class="ph-row">
+                  <div class="ph-col flex-grow">
+                    Total
+                  </div>
+
+                  <div class="ph-col">
+                    1500
+                  </div>
+                </div>
+              </n-list-item>
+
+              <n-list-item>
+                <n-button type="primary" text @click="addIncomeItem">
+                  <n-icon size="24">
+                    <AddSharp/>
+                  </n-icon>
+                </n-button>
+              </n-list-item>
+            </n-list>
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="ph-col flex-grow">
             <div class="ph-row">
-              <div class="ph-col flex-grow">
-                {{ item.name }}
-              </div>
-
-              <div class="ph-col">
-                {{ item.amount }}
-              </div>
+              <n-input v-model:value="newIncomeItem.name" type="text" placeholder="Name"/>
             </div>
-          </n-list-item>
 
-          <n-list-item>
-            <div class="ph-row">
-              <div class="ph-col flex-grow">
-                Total
-              </div>
-
-              <div class="ph-col">
-                1500
-              </div>
+            <div class="ph-row mt-2">
+              <n-input-number v-model:value="newIncomeItem.amount" placeholder="Amount"/>
             </div>
-          </n-list-item>
 
-          <n-list-item>
-            <n-button type="primary" text @click="addIncomeItem">
-              <n-icon size="24">
-                <AddSharp/>
-              </n-icon>
-            </n-button>
-          </n-list-item>
-        </n-list>
-      </div>
+            <div class="ph-row mt-2">
+              <n-input v-model:value="newIncomeItem.currency" type="text" placeholder="Currency"/>
+            </div>
+
+            <div class="ph-row mt-2">
+              <n-select
+                v-model:value="newIncomeItem.period"
+                :options="incomePeriods"
+                placeholder="Payment Period"
+              />
+            </div>
+
+            <div class="ph-row mt-4">
+              <div class="ph-col flex-grow"/>
+
+              <n-button type="info" ghost class="mr-2" @click="cancelAddingIncomeItem">
+                Back
+              </n-button>
+
+              <n-button type="success" ghost @click="saveNewIncomeItem">
+                Save
+              </n-button>
+            </div>
+          </div>
+        </template>
     </div>
   </div>
 </template>
 
-<style>
-
+<style lang="scss">
+#finance-income-section {
+  .n-input-number {
+    width: 100%;
+  }
+}
 </style>
