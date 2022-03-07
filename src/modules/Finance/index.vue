@@ -1,6 +1,8 @@
 <script>
-import { reactive, toRefs } from '@vue/reactivity';
+import { useStore } from 'vuex';
+import { reactive, toRefs, onMounted } from 'vue';
 import { FullscreenSharp } from '@vicons/material';
+import useAlertMessage from '@/mixins/useAlertMessage';
 import FinanceIncomeSection from './components/FinanceIncomeSection.vue';
 
 export default {
@@ -10,13 +12,46 @@ export default {
     FinanceIncomeSection,
   },
   setup() {
+    const store = useStore();
+    const { showAlertMessage } = useAlertMessage();
     const state = reactive({
+      userFinanceCollection: null,
+      isCollectionLoading: false,
       isCardExpanded: false,
       expandedCard: {},
       modalCardStyle: {
         height: '90vh',
         width: '90%',
       },
+    });
+
+    const fetchFinanceData = () => {
+      state.isCollectionLoading = true;
+
+      const queryParams = {
+        collection: 'finance',
+        where: {
+          key: 'userId',
+          operator: '==',
+          value: store.state.userId,
+        },
+      };
+
+      store.dispatch('fetchDataWithQuery', queryParams)
+        .then((querySnapshot) => {
+          const [data] = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          state.userFinanceCollection = data;
+        })
+        .catch((err) => {
+          showAlertMessage('error', err.message);
+        })
+        .finally(() => {
+          state.isCollectionLoading = false;
+        });
+    };
+
+    onMounted(() => {
+      fetchFinanceData();
     });
 
     const maximizeCard = (card) => {
@@ -32,33 +67,37 @@ export default {
 
 <template>
   <div id="finance-wrapper">
-    <div class="ph-row ph-section">
-      <div class="ph-col xs12 md6 pr-1">
-        <n-card title="INCOME">
-          <template #header-extra>
-            <n-icon size="24" @click="maximizeCard('income-card')">
-              <FullscreenSharp/>
-            </n-icon>
-          </template>
+    <template v-if="userFinanceCollection">
+      <div class="ph-row ph-section">
+        <div class="ph-col xs12 md6 pr-1">
+          <n-card title="INCOME">
+            <template #header-extra>
+              <n-icon size="24" @click="maximizeCard('income-card')">
+                <FullscreenSharp/>
+              </n-icon>
+            </template>
 
-          <FinanceIncomeSection/>
-        </n-card>
+            <FinanceIncomeSection
+              :financeCollectionId="userFinanceCollection.id"
+            />
+          </n-card>
+        </div>
+
+        <div class="ph-col xs12 md6 pl-1">
+          <n-card title="BALANCE">
+            lol
+          </n-card>
+        </div>
       </div>
 
-      <div class="ph-col xs12 md6 pl-1">
-        <n-card title="BALANCE">
-          lol
-        </n-card>
+      <div class="ph-row ph-section pt-2">
+        <div class="ph-col xs12 md12">
+          <n-card title="EXPENSE">
+            lel
+          </n-card>
+        </div>
       </div>
-    </div>
-
-    <div class="ph-row ph-section pt-2">
-      <div class="ph-col xs12 md12">
-        <n-card title="EXPENSE">
-          lel
-        </n-card>
-      </div>
-    </div>
+    </template>
 
     <n-modal v-model:show="isCardExpanded">
        <n-card
