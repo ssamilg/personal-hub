@@ -93,7 +93,6 @@ export default createStore({
       return getDocs(q);
     },
     fetchAllData(_, params) {
-      console.log(params);
       const collectionRef = collection(firestoreDB, params.collection);
 
       return getDocs(collectionRef);
