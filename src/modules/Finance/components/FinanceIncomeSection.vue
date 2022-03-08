@@ -1,13 +1,19 @@
 <script>
-import { reactive, toRefs, onMounted } from 'vue';
+import {
+  toRefs,
+  reactive,
+  onMounted,
+} from 'vue';
 import { useStore } from 'vuex';
 import useAlertMessage from '@/mixins/useAlertMessage';
-import { AddSharp } from '@vicons/material';
+import { AddSharp, CloseSharp, EditSharp } from '@vicons/material';
 
 export default {
   name: 'FinanceIncomeSection',
   components: {
     AddSharp,
+    EditSharp,
+    CloseSharp,
   },
   props: {
     financeCollectionId: {
@@ -20,7 +26,7 @@ export default {
     const { showAlertMessage } = useAlertMessage();
     const state = reactive({
       incomeList: [],
-      newIncomeItem: null,
+      editingIncomeItem: null,
       baseIncomeItem: {
         name: '',
         amount: null,
@@ -36,8 +42,10 @@ export default {
       addIncomeMode: false,
     });
 
+    const collectionPath = `finance/${props.financeCollectionId}/income_list`;
+
     const fetchIncomeList = () => {
-      const params = { collection: `finance/${props.financeCollectionId}/income_list` };
+      const params = { collectionPath };
 
       store.dispatch('fetchAllData', params)
         .then((querySnapshot) => {
@@ -57,21 +65,21 @@ export default {
     });
 
     const addIncomeItem = () => {
-      state.newIncomeItem = JSON.parse(JSON.stringify(state.baseIncomeItem));
+      state.editingIncomeItem = JSON.parse(JSON.stringify(state.baseIncomeItem));
       state.addIncomeMode = true;
     };
 
-    const saveNewIncomeItem = () => {
+    const saveIncomeItem = () => {
       const params = {
-        collection: `finance/${props.financeCollectionId}/income_list`,
-        payload: state.newIncomeItem,
+        ...{ id: state.editingIncomeItem.id },
+        collectionPath,
+        payload: state.editingIncomeItem,
       };
 
-      store.dispatch('addNewData', params)
-        .then((res) => {
-          console.log(res);
+      store.dispatch(state.editingIncomeItem.id ? 'updateDataById' : 'addNewData', params)
+        .then(() => {
           fetchIncomeList();
-          showAlertMessage('success', 'Success !');
+          showAlertMessage('success', 'Successfully added !');
         })
         .catch((err) => {
           showAlertMessage('error', err.message);
@@ -81,10 +89,33 @@ export default {
         });
     };
 
+    const removeIncomeItem = (incomeItem) => {
+      const params = {
+        collectionPath,
+        id: incomeItem.id,
+      };
+
+      store.dispatch('deleteDataById', params)
+        .then(() => {
+          fetchIncomeList();
+          showAlertMessage('success', 'Successfully removed !');
+        })
+        .catch((err) => {
+          showAlertMessage('error', err.message);
+        });
+    };
+
+    const editIncomeItem = (item) => {
+      state.addIncomeMode = true;
+      state.editingIncomeItem = item;
+    };
+
     return {
       ...toRefs(state),
       addIncomeItem,
-      saveNewIncomeItem,
+      saveIncomeItem,
+      editIncomeItem,
+      removeIncomeItem,
     };
   },
 };
@@ -102,17 +133,54 @@ export default {
         <template v-if="!addIncomeMode">
           <div class="ph-col md8 xs12 pl-1">
             <n-list bordered>
+              <n-list-item>
+                <div class="ph-row align-center">
+                  <n-button type="primary" text @click="addIncomeItem">
+                    <n-icon size="24">
+                      <AddSharp/>
+                    </n-icon>
+                  </n-button>
+                </div>
+              </n-list-item>
+
               <n-list-item
                 v-for="item in incomeList"
                 :key="item.id"
+                class="income-list-item"
               >
                 <div class="ph-row">
                   <div class="ph-col flex-grow">
                     {{ item.name }}
                   </div>
 
-                  <div class="ph-col">
+                  <div class="ph-col xs2 income-list-item-currency">
+                    {{ item.currency }}
+                  </div>
+
+                  <div class="ph-col xs2 text-align-right income-list-item-amount">
                     {{ item.amount }}
+                  </div>
+
+                  <div class="ph-col xs4 income-list-item-actions">
+                    <div class="ph-row">
+                      <div class="ph-col xs6">
+                        <n-button text type="info" @click="editIncomeItem(item)">
+                          <n-icon size="24">
+                            <EditSharp/>
+                          </n-icon>
+                        </n-button>
+                      </div>
+
+                      <div class="ph-col flex-grow"/>
+
+                      <div class="ph-col xs2">
+                        <n-button text type="error" @click="removeIncomeItem(item)">
+                          <n-icon size="24">
+                            <CloseSharp/>
+                          </n-icon>
+                        </n-button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </n-list-item>
@@ -128,14 +196,6 @@ export default {
                   </div>
                 </div>
               </n-list-item>
-
-              <n-list-item>
-                <n-button type="primary" text @click="addIncomeItem">
-                  <n-icon size="24">
-                    <AddSharp/>
-                  </n-icon>
-                </n-button>
-              </n-list-item>
             </n-list>
           </div>
         </template>
@@ -143,20 +203,24 @@ export default {
         <template v-else>
           <div class="ph-col flex-grow">
             <div class="ph-row">
-              <n-input v-model:value="newIncomeItem.name" type="text" placeholder="Name"/>
+              <n-input v-model:value="editingIncomeItem.name" type="text" placeholder="Name"/>
             </div>
 
             <div class="ph-row mt-2">
-              <n-input-number v-model:value="newIncomeItem.amount" placeholder="Amount"/>
+              <n-input-number v-model:value="editingIncomeItem.amount" placeholder="Amount"/>
             </div>
 
             <div class="ph-row mt-2">
-              <n-input v-model:value="newIncomeItem.currency" type="text" placeholder="Currency"/>
+              <n-input
+                v-model:value="editingIncomeItem.currency"
+                type="text"
+                placeholder="Currency"
+              />
             </div>
 
             <div class="ph-row mt-2">
               <n-select
-                v-model:value="newIncomeItem.period"
+                v-model:value="editingIncomeItem.period"
                 :options="incomePeriods"
                 placeholder="Payment Period"
               />
@@ -169,7 +233,7 @@ export default {
                 Back
               </n-button>
 
-              <n-button type="success" ghost @click="saveNewIncomeItem">
+              <n-button type="success" ghost @click="saveIncomeItem">
                 Save
               </n-button>
             </div>
@@ -183,6 +247,22 @@ export default {
 #finance-income-section {
   .n-input-number {
     width: 100%;
+  }
+
+  .income-list-item {
+    &-actions {
+      display: none;
+    }
+
+    &:hover {
+      .income-list-item-currency, .income-list-item-amount {
+        display: none;
+      }
+
+      .income-list-item-actions {
+        display: block;
+      }
+    }
   }
 }
 </style>
