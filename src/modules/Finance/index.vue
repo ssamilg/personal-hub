@@ -29,7 +29,7 @@ export default {
       state.isCollectionLoading = true;
 
       const queryParams = {
-        collection: 'finance',
+        collectionPath: 'finance',
         where: {
           key: 'userId',
           operator: '==',
@@ -137,6 +137,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: sticky;
+    top: 0;
   }
 
   .modal-card {
@@ -150,6 +152,10 @@ export default {
 
     .n-card {
       height: 100%;
+
+      .n-card__content {
+        overflow: auto;
+      }
     }
   }
 }
