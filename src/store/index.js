@@ -7,10 +7,13 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import {
+  doc,
   query,
   where,
   addDoc,
   getDocs,
+  deleteDoc,
+  updateDoc,
   collection,
 } from 'firebase/firestore';
 
@@ -87,18 +90,25 @@ export default createStore({
     fetchDataWithQuery(_, params) {
       // https://firebase.google.com/docs/firestore/query-data/queries
       const { key, operator, value } = params.where;
-      const collectionRef = collection(firestoreDB, params.collection);
+      const collectionRef = collection(firestoreDB, params.collectionPath);
       const q = query(collectionRef, where(key, operator, value));
 
       return getDocs(q);
     },
     fetchAllData(_, params) {
-      const collectionRef = collection(firestoreDB, params.collection);
+      console.log(params);
+      const collectionRef = collection(firestoreDB, params.collectionPath);
 
       return getDocs(collectionRef);
     },
     addNewData(_, params) {
-      return addDoc(collection(firestoreDB, params.collection), params.payload);
+      return addDoc(collection(firestoreDB, params.collectionPath), params.payload);
+    },
+    deleteDataById(_, params) {
+      return deleteDoc(doc(firestoreDB, params.collectionPath, params.id));
+    },
+    updateDataById(_, params) {
+      return updateDoc(doc(firestoreDB, params.collectionPath, params.id), params.payload);
     },
   },
   modules: {
