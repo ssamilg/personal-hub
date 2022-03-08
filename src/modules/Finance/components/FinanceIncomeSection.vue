@@ -3,6 +3,7 @@ import {
   toRefs,
   reactive,
   onMounted,
+  computed,
 } from 'vue';
 import { useStore } from 'vuex';
 import useAlertMessage from '@/mixins/useAlertMessage';
@@ -60,6 +61,12 @@ export default {
         });
     };
 
+    const incomeTotal = computed(() => {
+      return state.incomeList
+        .map((i) => i.amount)
+        .reduce((pre, curr) => pre + curr, 0);
+    });
+
     onMounted(() => {
       fetchIncomeList();
     });
@@ -112,6 +119,7 @@ export default {
 
     return {
       ...toRefs(state),
+      incomeTotal,
       addIncomeItem,
       saveIncomeItem,
       editIncomeItem,
@@ -192,7 +200,7 @@ export default {
                   </div>
 
                   <div class="ph-col">
-                    1500
+                    {{ incomeTotal }}
                   </div>
                 </div>
               </n-list-item>
