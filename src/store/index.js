@@ -84,7 +84,6 @@ export default createStore({
       return signOut(this.state.auth);
     },
     updateUser(_, value) {
-      console.log(value);
       return updateProfile(this.state.auth.currentUser, value);
     },
     fetchDataWithQuery(_, params) {
@@ -96,7 +95,6 @@ export default createStore({
       return getDocs(q);
     },
     fetchAllData(_, params) {
-      console.log(params);
       const collectionRef = collection(firestoreDB, params.collectionPath);
 
       return getDocs(collectionRef);
