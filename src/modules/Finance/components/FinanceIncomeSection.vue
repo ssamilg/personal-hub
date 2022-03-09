@@ -7,14 +7,22 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import useAlertMessage from '@/mixins/useAlertMessage';
-import { AddSharp, CloseSharp, EditSharp } from '@vicons/material';
+import {
+  AddSharp,
+  SaveSharp,
+  EditSharp,
+  DeleteSharp,
+  ArrowBackIosSharp,
+} from '@vicons/material';
 
 export default {
   name: 'FinanceIncomeSection',
   components: {
     AddSharp,
     EditSharp,
-    CloseSharp,
+    SaveSharp,
+    DeleteSharp,
+    ArrowBackIosSharp,
   },
   props: {
     financeCollectionId: {
@@ -96,10 +104,10 @@ export default {
         });
     };
 
-    const removeIncomeItem = (incomeItem) => {
+    const removeIncomeItem = () => {
       const params = {
         collectionPath,
-        id: incomeItem.id,
+        id: state.editingIncomeItem.id,
       };
 
       store.dispatch('deleteDataById', params)
@@ -109,6 +117,9 @@ export default {
         })
         .catch((err) => {
           showAlertMessage('error', err.message);
+        })
+        .finally(() => {
+          state.addIncomeMode = false;
         });
     };
 
@@ -141,50 +152,31 @@ export default {
         <template v-if="!addIncomeMode">
           <div class="ph-col md8 xs12 pl-1">
             <n-list bordered>
-              <n-list-item>
-                <div class="ph-row align-center">
-                  <n-button type="primary" text @click="addIncomeItem">
-                    <n-icon size="24">
-                      <AddSharp/>
-                    </n-icon>
-                  </n-button>
-                </div>
-              </n-list-item>
-
               <n-list-item
                 v-for="item in incomeList"
                 :key="item.id"
-                class="income-list-item"
               >
                 <div class="ph-row">
-                  <div class="ph-col flex-grow">
+                  <div class="ph-col xs6">
                     {{ item.name }}
                   </div>
 
-                  <div class="ph-col xs2 income-list-item-currency">
+                  <div class="ph-col xs2">
                     {{ item.currency }}
                   </div>
 
-                  <div class="ph-col xs2 text-align-right income-list-item-amount">
+                  <div class="ph-col xs2 text-align-right">
                     {{ item.amount }}
                   </div>
 
-                  <div class="ph-col xs4 income-list-item-actions">
+                  <div class="ph-col xs2">
                     <div class="ph-row">
-                      <div class="ph-col xs6">
-                        <n-button text type="info" @click="editIncomeItem(item)">
-                          <n-icon size="24">
-                            <EditSharp/>
-                          </n-icon>
-                        </n-button>
-                      </div>
-
                       <div class="ph-col flex-grow"/>
 
-                      <div class="ph-col xs2">
-                        <n-button text type="error" @click="removeIncomeItem(item)">
-                          <n-icon size="24">
-                            <CloseSharp/>
+                      <div class="ph-col flex-shrink">
+                        <n-button text type="info" @click="editIncomeItem(item)">
+                          <n-icon size="20">
+                            <EditSharp/>
                           </n-icon>
                         </n-button>
                       </div>
@@ -195,12 +187,26 @@ export default {
 
               <n-list-item>
                 <div class="ph-row">
-                  <div class="ph-col flex-grow">
+                  <div class="ph-col xs8">
                     Total
                   </div>
 
-                  <div class="ph-col">
+                  <div class="ph-col text-align-right xs2">
                     {{ incomeTotal }}
+                  </div>
+
+                  <div class="ph-col xs2">
+                    <div class="ph-row">
+                      <div class="ph-col flex-grow"/>
+
+                      <div class="ph-col flex-shrink">
+                        <n-button type="primary" text @click="addIncomeItem">
+                          <n-icon size="24">
+                            <AddSharp/>
+                          </n-icon>
+                        </n-button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </n-list-item>
@@ -235,13 +241,40 @@ export default {
             </div>
 
             <div class="ph-row mt-4">
+              <n-button
+                v-if="editingIncomeItem.id"
+                type="error"
+                ghost
+                @click="removeIncomeItem"
+              >
+                <template #icon>
+                  <n-icon>
+                    <DeleteSharp/>
+                  </n-icon>
+                </template>
+
+                Delete
+              </n-button>
+
               <div class="ph-col flex-grow"/>
 
               <n-button type="info" ghost class="mr-2" @click="addIncomeMode = false">
+                <template #icon>
+                  <n-icon>
+                    <ArrowBackIosSharp/>
+                  </n-icon>
+                </template>
+
                 Back
               </n-button>
 
               <n-button type="success" ghost @click="saveIncomeItem">
+                <template #icon>
+                  <n-icon>
+                    <SaveSharp/>
+                  </n-icon>
+                </template>
+
                 Save
               </n-button>
             </div>
@@ -255,22 +288,6 @@ export default {
 #finance-income-section {
   .n-input-number {
     width: 100%;
-  }
-
-  .income-list-item {
-    &-actions {
-      display: none;
-    }
-
-    &:hover {
-      .income-list-item-currency, .income-list-item-amount {
-        display: none;
-      }
-
-      .income-list-item-actions {
-        display: block;
-      }
-    }
   }
 }
 </style>
