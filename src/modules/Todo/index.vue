@@ -1,18 +1,18 @@
 <script>
 import {
-  CheckBoxSharp,
+  CheckBoxOutlined,
   CheckBoxOutlineBlankSharp,
 } from '@vicons/material';
 
 export default {
   name: 'Todo',
   components: {
-    CheckBoxSharp,
+    CheckBoxOutlined,
     CheckBoxOutlineBlankSharp,
   },
   setup() {
     return {
-      CheckBoxSharp,
+      CheckBoxOutlined,
       CheckBoxOutlineBlankSharp,
     };
   },
@@ -43,22 +43,14 @@ export default {
 
                   <div class="ph-row card-text-item">
                     <n-icon size="20" color="#5ACEA7" class="mr-1">
-                      <CheckBoxSharp/>
+                      <CheckBoxOutlined/>
                     </n-icon>
 
                     {{ index }} lel
                   </div>
 
                   <div class="ph-row card-text-item">
-                    <n-icon size="20" color="#66AFD3" class="mr-1">
-                      <CheckBoxOutlineBlankSharp/>
-                    </n-icon>
-
-                    {{ index }} lel
-                  </div>
-
-                  <div class="ph-row card-text-item">
-                    <n-icon size="20" color="#66AFD3" class="mr-1">
+                    <n-icon size="20" color="#5ACEA7" class="mr-1">
                       <CheckBoxOutlineBlankSharp/>
                     </n-icon>
 
@@ -67,7 +59,15 @@ export default {
 
                   <div class="ph-row card-text-item">
                     <n-icon size="20" color="#5ACEA7" class="mr-1">
-                      <CheckBoxSharp/>
+                      <CheckBoxOutlineBlankSharp/>
+                    </n-icon>
+
+                    {{ index }} lel
+                  </div>
+
+                  <div class="ph-row card-text-item">
+                    <n-icon size="20" color="#5ACEA7" class="mr-1">
+                      <CheckBoxOutlined/>
                     </n-icon>
 
                     {{ index }} lel
