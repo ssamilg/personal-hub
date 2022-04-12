@@ -57,7 +57,7 @@ export default {
   <div id="todo">
     <div class="ph-row flex-wrap justify-center">
       <div class="ph-col md8">
-        <div class="ph-row flex-wrap my-5">
+        <div class="ph-row flex-wrap my-5 justify-center">
           <div
             v-for="todoCard in todos" :key="todoCard.id"
             class="ph-col xs12 md4"
