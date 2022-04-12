@@ -1,8 +1,12 @@
 <script>
+import { useStore } from 'vuex';
+import useAlertMessage from '@/mixins/useAlertMessage';
 import {
   CheckBoxOutlined,
   CheckBoxOutlineBlankSharp,
 } from '@vicons/material';
+import { reactive, toRefs } from '@vue/reactivity';
+import { onMounted } from '@vue/runtime-core';
 
 export default {
   name: 'Todo',
@@ -11,7 +15,37 @@ export default {
     CheckBoxOutlineBlankSharp,
   },
   setup() {
+    const store = useStore();
+    const { showAlertMessage } = useAlertMessage();
+    const state = reactive({
+      todos: [],
+      isLoading: false,
+    });
+
+    const fetchTodos = () => {
+      state.isLoading = true;
+
+      const collectionPath = 'todo';
+      const params = { collectionPath };
+
+      store.dispatch('fetchAllData', params)
+        .then((querySnapshot) => {
+          state.todos = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        })
+        .catch((err) => {
+          showAlertMessage('error', err.message);
+        })
+        .finally(() => {
+          state.isLoading = false;
+        });
+    };
+
+    onMounted(() => {
+      fetchTodos();
+    });
+
     return {
+      ...toRefs(state),
       CheckBoxOutlined,
       CheckBoxOutlineBlankSharp,
     };
@@ -25,7 +59,7 @@ export default {
       <div class="ph-col md8">
         <div class="ph-row flex-wrap my-5">
           <div
-            v-for="(card, index) in 15" :key="index"
+            v-for="todoCard in todos" :key="todoCard.id"
             class="ph-col xs12 md4"
           >
             <n-card class="ma-1">
@@ -38,15 +72,19 @@ export default {
 
                 <div class="ph-col">
                   <div class="ph-row pb-1 card-header">
-                    todo {{ index }}
+                    {{ todoCard.name }}
                   </div>
 
-                  <div class="ph-row card-text-item">
+                  <div
+                    v-for="(todoItem, index) in todoCard.items"
+                    :key="index"
+                    class="ph-row card-text-item"
+                  >
                     <n-icon size="20" color="#5ACEA7" class="mr-1">
                       <CheckBoxOutlined/>
                     </n-icon>
 
-                    {{ index }} lel
+                    {{ todoItem }}
                   </div>
 
                   <div class="ph-row card-text-item">
@@ -54,23 +92,7 @@ export default {
                       <CheckBoxOutlineBlankSharp/>
                     </n-icon>
 
-                    {{ index }} lel
-                  </div>
-
-                  <div class="ph-row card-text-item">
-                    <n-icon size="20" color="#5ACEA7" class="mr-1">
-                      <CheckBoxOutlineBlankSharp/>
-                    </n-icon>
-
-                    {{ index }} lel
-                  </div>
-
-                  <div class="ph-row card-text-item">
-                    <n-icon size="20" color="#5ACEA7" class="mr-1">
-                      <CheckBoxOutlined/>
-                    </n-icon>
-
-                    {{ index }} lel
+                    this todo is not done yet
                   </div>
                 </div>
               </div>
