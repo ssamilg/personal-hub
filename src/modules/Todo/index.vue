@@ -81,18 +81,12 @@ export default {
                     class="ph-row card-text-item"
                   >
                     <n-icon size="20" color="#5ACEA7" class="mr-1">
-                      <CheckBoxOutlined/>
+                      <component
+                        :is="todoItem.isDone ? 'CheckBoxOutlined' : 'CheckBoxOutlineBlankSharp'"
+                      />
                     </n-icon>
 
-                    {{ todoItem }}
-                  </div>
-
-                  <div class="ph-row card-text-item">
-                    <n-icon size="20" color="#5ACEA7" class="mr-1">
-                      <CheckBoxOutlineBlankSharp/>
-                    </n-icon>
-
-                    this todo is not done yet
+                    {{ todoItem.text }}
                   </div>
                 </div>
               </div>
