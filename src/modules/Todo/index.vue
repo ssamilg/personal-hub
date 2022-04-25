@@ -90,46 +90,41 @@ export default {
         </div>
 
         <div class="ph-row flex-wrap my-5 justify-center">
-          <template v-for="col in 3" :key="col">
-            <div class="ph-col xs12 md4">
-              <template v-for="(todoCard, index) in todos" :key="todoCard.id">
-                <!-- col: {{ col }}
-                card: {{ index + 1 }} -->
-                <div v-if="(index + 1) % 3 === col % 3" class="ph-row">
-                  <n-card class="ma-1" style="width: 100%">
-                    <div class="ph-row align-center">
-                      <!-- <div class="ph-col pr-3">
-                        <n-icon size="36">
-                          <component :is="card.icon"/>
-                        </n-icon>
-                      </div> -->
+          <div
+            v-for="todoCard in todos" :key="todoCard.id"
+            class="ph-col xs12 md4"
+          >
+            <n-card class="ma-1 fill-height">
+              <div class="ph-row align-center">
+                <!-- <div class="ph-col pr-3">
+                  <n-icon size="36">
+                    <component :is="card.icon"/>
+                  </n-icon>
+                </div> -->
 
-                      <div class="ph-col">
-                        <div class="ph-row pb-1 card-header">
-                          {{ todoCard.name }}
-                        </div>
+                <div class="ph-col">
+                  <div class="ph-row pb-1 card-header">
+                    {{ todoCard.name }}
+                  </div>
 
-                        <div
-                          v-for="(todoItem, index) in todoCard.items"
-                          :key="index"
-                          class="ph-row card-text-item"
-                        >
-                          <n-icon size="20" color="#5ACEA7" class="mr-1">
-                            <component
-                              :is="todoItem.isDone
-                              ? 'CheckBoxOutlined' : 'CheckBoxOutlineBlankSharp'"
-                            />
-                          </n-icon>
+                  <div
+                    v-for="(todoItem, index) in todoCard.items"
+                    :key="index"
+                    class="ph-row card-text-item"
+                  >
+                    <n-icon size="20" color="#5ACEA7" class="mr-1">
+                      <component
+                        :is="todoItem.isDone
+                        ? 'CheckBoxOutlined' : 'CheckBoxOutlineBlankSharp'"
+                      />
+                    </n-icon>
 
-                          {{ todoItem.text }}
-                        </div>
-                      </div>
-                    </div>
-                  </n-card>
+                    {{ todoItem.text }}
+                  </div>
                 </div>
-              </template>
-            </div>
-          </template>
+              </div>
+            </n-card>
+          </div>
         </div>
       </div>
     </div>
