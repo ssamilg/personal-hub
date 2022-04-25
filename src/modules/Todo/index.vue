@@ -31,6 +31,7 @@ export default {
       store.dispatch('fetchAllData', params)
         .then((querySnapshot) => {
           state.todos = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          console.log(state.todos);
         })
         .catch((err) => {
           showAlertMessage('error', err.message);
@@ -44,8 +45,33 @@ export default {
       fetchTodos();
     });
 
+    const createNewTodo = () => {
+      const newTodo = {
+        id: 'lel',
+        name: 'new todo',
+        items: [
+          { text: 'item 1', isDone: false },
+          { text: 'item 2', isDone: true },
+          { text: 'item 3', isDone: true },
+          { text: 'item 4', isDone: false },
+          { text: 'item 5', isDone: false },
+          { text: 'item 6', isDone: true },
+          { text: 'item 7', isDone: true },
+          { text: 'item 8', isDone: false },
+          { text: 'item 9', isDone: true },
+          { text: 'item 10', isDone: false },
+          { text: 'item 11', isDone: true },
+        ],
+      };
+
+      newTodo.items = newTodo.items.slice(0, Math.floor(Math.random() * 10));
+
+      state.todos.push(newTodo);
+    };
+
     return {
       ...toRefs(state),
+      createNewTodo,
       CheckBoxOutlined,
       CheckBoxOutlineBlankSharp,
     };
@@ -56,42 +82,54 @@ export default {
 <template>
   <div id="todo">
     <div class="ph-row flex-wrap justify-center">
-      <div class="ph-col md8">
+      <div class="ph-col md8" style="border:1px solid #eee;">
+        <div class="ph-row">
+          <n-button @click="createNewTodo">
+            click for new one
+          </n-button>
+        </div>
+
         <div class="ph-row flex-wrap my-5 justify-center">
-          <div
-            v-for="todoCard in todos" :key="todoCard.id"
-            class="ph-col xs12 md4"
-          >
-            <n-card class="ma-1">
-              <div class="ph-row align-center">
-                <!-- <div class="ph-col pr-3">
-                  <n-icon size="36">
-                    <component :is="card.icon"/>
-                  </n-icon>
-                </div> -->
+          <template v-for="col in 3" :key="col">
+            <div class="ph-col xs12 md4">
+              <template v-for="(todoCard, index) in todos" :key="todoCard.id">
+                <!-- col: {{ col }}
+                card: {{ index + 1 }} -->
+                <div v-if="(index + 1) % 3 === col % 3" class="ph-row">
+                  <n-card class="ma-1" style="width: 100%">
+                    <div class="ph-row align-center">
+                      <!-- <div class="ph-col pr-3">
+                        <n-icon size="36">
+                          <component :is="card.icon"/>
+                        </n-icon>
+                      </div> -->
 
-                <div class="ph-col">
-                  <div class="ph-row pb-1 card-header">
-                    {{ todoCard.name }}
-                  </div>
+                      <div class="ph-col">
+                        <div class="ph-row pb-1 card-header">
+                          {{ todoCard.name }}
+                        </div>
 
-                  <div
-                    v-for="(todoItem, index) in todoCard.items"
-                    :key="index"
-                    class="ph-row card-text-item"
-                  >
-                    <n-icon size="20" color="#5ACEA7" class="mr-1">
-                      <component
-                        :is="todoItem.isDone ? 'CheckBoxOutlined' : 'CheckBoxOutlineBlankSharp'"
-                      />
-                    </n-icon>
+                        <div
+                          v-for="(todoItem, index) in todoCard.items"
+                          :key="index"
+                          class="ph-row card-text-item"
+                        >
+                          <n-icon size="20" color="#5ACEA7" class="mr-1">
+                            <component
+                              :is="todoItem.isDone
+                              ? 'CheckBoxOutlined' : 'CheckBoxOutlineBlankSharp'"
+                            />
+                          </n-icon>
 
-                    {{ todoItem.text }}
-                  </div>
+                          {{ todoItem.text }}
+                        </div>
+                      </div>
+                    </div>
+                  </n-card>
                 </div>
-              </div>
-            </n-card>
-          </div>
+              </template>
+            </div>
+          </template>
         </div>
       </div>
     </div>
