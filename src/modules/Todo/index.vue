@@ -2,6 +2,10 @@
 import { useStore } from 'vuex';
 import useAlertMessage from '@/mixins/useAlertMessage';
 import {
+  AddSharp,
+  SaveSharp,
+  EditSharp,
+  DeleteSharp,
   CheckBoxOutlined,
   CheckBoxOutlineBlankSharp,
 } from '@vicons/material';
@@ -11,6 +15,10 @@ import { onMounted } from '@vue/runtime-core';
 export default {
   name: 'Todo',
   components: {
+    AddSharp,
+    SaveSharp,
+    EditSharp,
+    DeleteSharp,
     CheckBoxOutlined,
     CheckBoxOutlineBlankSharp,
   },
@@ -151,7 +159,11 @@ export default {
         transform-origin="center"
       >
         <template #header-extra>
-          Oops!
+          <n-button text type="info">
+            <n-icon size="20">
+              <EditSharp/>
+            </n-icon>
+          </n-button>
         </template>
 
         <div
