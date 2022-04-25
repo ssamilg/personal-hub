@@ -20,6 +20,12 @@ export default {
     const state = reactive({
       todos: [],
       isLoading: false,
+      isModalOn: false,
+      selectedTodo: null,
+      modalCardStyle: {
+        height: '50%',
+        width: '50%',
+      },
     });
 
     const fetchTodos = () => {
@@ -69,8 +75,14 @@ export default {
       state.todos.push(newTodo);
     };
 
+    const selectTodo = (todo) => {
+      state.selectedTodo = todo;
+      state.isModalOn = true;
+    };
+
     return {
       ...toRefs(state),
+      selectTodo,
       createNewTodo,
       CheckBoxOutlined,
       CheckBoxOutlineBlankSharp,
@@ -94,7 +106,7 @@ export default {
             v-for="todoCard in todos" :key="todoCard.id"
             class="ph-col xs12 md4"
           >
-            <n-card class="ma-1 fill-height">
+            <n-card class="ma-1 fill-height" @click="selectTodo(todoCard)">
               <div class="ph-row align-center">
                 <!-- <div class="ph-col pr-3">
                   <n-icon size="36">
@@ -128,6 +140,40 @@ export default {
         </div>
       </div>
     </div>
+
+    <n-modal v-model:show="isModalOn">
+      <n-card
+        :title="selectedTodo.name"
+        :style="modalCardStyle"
+        class="modal-card"
+        size="huge"
+        aria-modal="true"
+        transform-origin="center"
+      >
+        <template #header-extra>
+          Oops!
+        </template>
+
+        <div
+          v-for="(todoItem, index) in selectedTodo.items"
+          :key="index"
+          class="ph-row card-text-item"
+        >
+          <n-icon size="20" color="#5ACEA7" class="mr-1">
+            <component
+              :is="todoItem.isDone
+              ? 'CheckBoxOutlined' : 'CheckBoxOutlineBlankSharp'"
+            />
+          </n-icon>
+
+          {{ todoItem.text }}
+        </div>
+
+        <template #footer>
+          Footer
+        </template>
+      </n-card>
+    </n-modal>
   </div>
 </template>
 
