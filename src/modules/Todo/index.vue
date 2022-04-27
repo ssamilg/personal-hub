@@ -5,7 +5,8 @@ import {
   AddSharp,
   SaveSharp,
   EditSharp,
-  DeleteSharp,
+  PlusSharp,
+  MinusSharp,
   CheckBoxOutlined,
   CheckBoxOutlineBlankSharp,
 } from '@vicons/material';
@@ -18,7 +19,8 @@ export default {
     AddSharp,
     SaveSharp,
     EditSharp,
-    DeleteSharp,
+    PlusSharp,
+    MinusSharp,
     CheckBoxOutlined,
     CheckBoxOutlineBlankSharp,
   },
@@ -29,10 +31,15 @@ export default {
       todos: [],
       isLoading: false,
       isModalOn: false,
+      isEditMode: false,
       selectedTodo: null,
       modalCardStyle: {
         height: '50%',
         width: '50%',
+      },
+      newTodoItem: {
+        text: null,
+        isDone: false,
       },
     });
 
@@ -88,10 +95,25 @@ export default {
       state.isModalOn = true;
     };
 
+    const addNewTodoItem = () => {
+      state.selectedTodo.items.push(state.newTodoItem);
+
+      state.newTodoItem = {
+        text: null,
+        isDone: false,
+      };
+    };
+
+    const removeTodoItem = (todoItem) => {
+      state.selectedTodo.items.splice(state.selectedTodo.items.indexOf(todoItem), 1);
+    };
+
     return {
       ...toRefs(state),
       selectTodo,
       createNewTodo,
+      addNewTodoItem,
+      removeTodoItem,
       CheckBoxOutlined,
       CheckBoxOutlineBlankSharp,
     };
@@ -151,38 +173,106 @@ export default {
 
     <n-modal v-model:show="isModalOn">
       <n-card
-        :title="selectedTodo.name"
         :style="modalCardStyle"
         class="modal-card"
         size="huge"
         aria-modal="true"
         transform-origin="center"
       >
-        <template #header-extra>
-          <n-button text type="info">
-            <n-icon size="20">
-              <EditSharp/>
-            </n-icon>
-          </n-button>
+        <template #header>
+          <div class="ph-row align-center">
+            <template v-if="isEditMode">
+              <div class="ph-col md11">
+                <n-input
+                  v-model:value="selectedTodo.name"
+                  type="text"
+                  size="large"
+                  placeholder="Name"
+                />
+              </div>
+
+              <div class="ph-col md1">
+                <n-button text type="success" @click="isEditMode = !isEditMode">
+                  <n-icon size="20">
+                    <SaveSharp/>
+                  </n-icon>
+                </n-button>
+              </div>
+            </template>
+
+            <template v-else>
+              <div class="ph-col md11">
+                {{ selectedTodo.name }}
+              </div>
+
+              <div class="ph-col md1">
+                <n-button text type="info" @click="isEditMode = !isEditMode">
+                  <n-icon size="20">
+                    <EditSharp/>
+                  </n-icon>
+                </n-button>
+              </div>
+            </template>
+          </div>
+
         </template>
+
+        <!-- <template #header-extra>
+        </template> -->
 
         <div
           v-for="(todoItem, index) in selectedTodo.items"
           :key="index"
           class="ph-row card-text-item"
         >
-          <n-icon size="20" color="#5ACEA7" class="mr-1">
-            <component
-              :is="todoItem.isDone
-              ? 'CheckBoxOutlined' : 'CheckBoxOutlineBlankSharp'"
-            />
-          </n-icon>
+          <template v-if="isEditMode">
+            <!-- {{ todoItem.text }} -->
+            <div class="ph-row align-center mb-1">
+              <div class="ph-col md11">
+                <n-input
+                  v-model:value="todoItem.text"
+                  type="text"
+                  size="small"
+                  placeholder="Name"
+                />
+              </div>
 
-          {{ todoItem.text }}
+              <div class="ph-col md1">
+                <n-button text type="error" @click="removeTodoItem(todoItem)">
+                  <n-icon size="20">
+                    <MinusSharp/>
+                  </n-icon>
+                </n-button>
+              </div>
+            </div>
+          </template>
+
+          <template v-else>
+            <n-checkbox v-model:checked="todoItem.isDone" class="mb-2">
+              {{ todoItem.text }}
+            </n-checkbox>
+          </template>
         </div>
 
-        <template #footer>
-          Footer
+        <template v-if="isEditMode" #footer>
+          <div class="ph-row align-center">
+            <div class="ph-col md11">
+              <n-input
+                v-model:value="newTodoItem.text"
+                type="text"
+                size="small"
+                placeholder="Add new todo item..."
+              />
+            </div>
+
+            <div class="ph-col md1">
+              <n-button text type="success" @click="addNewTodoItem">
+                <n-icon size="20">
+                  <PlusSharp/>
+                </n-icon>
+              </n-button>
+            </div>
+          </div>
         </template>
       </n-card>
     </n-modal>
