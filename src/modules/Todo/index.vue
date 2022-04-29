@@ -7,7 +7,9 @@ import {
   EditSharp,
   PlusSharp,
   MinusSharp,
+  CloseSharp,
   CheckBoxOutlined,
+  ArrowBackIosSharp,
   CheckBoxOutlineBlankSharp,
 } from '@vicons/material';
 import { reactive, toRefs } from '@vue/reactivity';
@@ -21,7 +23,9 @@ export default {
     EditSharp,
     PlusSharp,
     MinusSharp,
+    CloseSharp,
     CheckBoxOutlined,
+    ArrowBackIosSharp,
     CheckBoxOutlineBlankSharp,
   },
   setup() {
@@ -31,11 +35,20 @@ export default {
       todos: [],
       isLoading: false,
       isModalOn: false,
+      isCreateMode: false,
       isEditMode: false,
       selectedTodo: null,
       modalCardStyle: {
         height: '50%',
         width: '50%',
+      },
+      newTodo: {
+        id: '0',
+        name: 'My Todo',
+        items: [{
+          text: 'Create a todo !',
+          isDone: true,
+        }],
       },
       newTodoItem: {
         text: null,
@@ -67,27 +80,30 @@ export default {
     });
 
     const createNewTodo = () => {
-      const newTodo = {
-        id: 'lel',
-        name: 'new todo',
-        items: [
-          { text: 'item 1', isDone: false },
-          { text: 'item 2', isDone: true },
-          { text: 'item 3', isDone: true },
-          { text: 'item 4', isDone: false },
-          { text: 'item 5', isDone: false },
-          { text: 'item 6', isDone: true },
-          { text: 'item 7', isDone: true },
-          { text: 'item 8', isDone: false },
-          { text: 'item 9', isDone: true },
-          { text: 'item 10', isDone: false },
-          { text: 'item 11', isDone: true },
-        ],
-      };
+      state.selectedTodo = state.newTodo;
+      state.isModalOn = true;
+      state.isCreateMode = true;
+      // const newTodo = {
+      //   id: 'lel',
+      //   name: 'new todo',
+      //   items: [
+      //     { text: 'item 1', isDone: false },
+      //     { text: 'item 2', isDone: true },
+      //     { text: 'item 3', isDone: true },
+      //     { text: 'item 4', isDone: false },
+      //     { text: 'item 5', isDone: false },
+      //     { text: 'item 6', isDone: true },
+      //     { text: 'item 7', isDone: true },
+      //     { text: 'item 8', isDone: false },
+      //     { text: 'item 9', isDone: true },
+      //     { text: 'item 10', isDone: false },
+      //     { text: 'item 11', isDone: true },
+      //   ],
+      // };
 
-      newTodo.items = newTodo.items.slice(0, Math.floor(Math.random() * 10));
+      // newTodo.items = newTodo.items.slice(0, Math.floor(Math.random() * 10));
 
-      state.todos.push(newTodo);
+      // state.todos.push(newTodo);
     };
 
     const selectTodo = (todo) => {
@@ -144,7 +160,7 @@ export default {
                   </n-icon>
                 </div> -->
 
-                <div class="ph-col">
+                <div class="ph-col md12">
                   <div class="ph-row pb-1 card-header">
                     {{ todoCard.name }}
                   </div>
@@ -161,7 +177,11 @@ export default {
                       />
                     </n-icon>
 
-                    {{ todoItem.text }}
+                    <div class="ph-col md12">
+                      <div class="text-truncate">
+                        {{ todoItem.text }}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -171,7 +191,11 @@ export default {
       </div>
     </div>
 
-    <n-modal v-model:show="isModalOn">
+    <n-modal
+      v-model:show="isModalOn"
+      close-on-esc
+      :mask-closable="false"
+    >
       <n-card
         :style="modalCardStyle"
         class="modal-card"
@@ -214,7 +238,6 @@ export default {
               </div>
             </template>
           </div>
-
         </template>
 
         <!-- <template #header-extra>
@@ -225,15 +248,19 @@ export default {
           :key="index"
           class="ph-row card-text-item"
         >
-          <template v-if="isEditMode">
-            <!-- {{ todoItem.text }} -->
-            <div class="ph-row align-center mb-1">
-              <div class="ph-col md11">
+          <div class="ph-row align-center mb-1">
+            <div class="ph-col md1">
+              <n-checkbox v-model:checked="todoItem.isDone"/>
+            </div>
+
+            <template v-if="isEditMode">
+              <div class="ph-col md10">
                 <n-input
                   v-model:value="todoItem.text"
                   type="text"
                   size="small"
                   placeholder="Name"
+                  :disabled="!isEditMode"
                 />
               </div>
 
@@ -244,35 +271,89 @@ export default {
                   </n-icon>
                 </n-button>
               </div>
+            </template>
+
+            <template v-else>
+              <div class="ph-col md11">
+                {{ todoItem.text }}
+              </div>
+            </template>
+          </div>
+
+          <!-- <template v-else>
+            <n-checkbox v-model:checked="todoItem.isDone" class="mb-2">
+              {{ todoItem.text }}
+            </n-checkbox>
+          </template> -->
+        </div>
+
+        <template #footer>
+          <template v-if="isEditMode">
+            <div class="ph-row align-center">
+              <div class="ph-col md1">
+                <n-checkbox v-model:checked="newTodoItem.isDone"/>
+              </div>
+
+              <div class="ph-col md10">
+                <n-input
+                  v-model:value="newTodoItem.text"
+                  type="text"
+                  size="small"
+                  placeholder="Add new todo item..."
+                />
+              </div>
+
+              <div class="ph-col md1">
+                <n-button text type="success" @click="addNewTodoItem">
+                  <n-icon size="20">
+                    <PlusSharp/>
+                  </n-icon>
+                </n-button>
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="isCreateMode">
+            <div class="ph-row justify-end">
+              <n-button
+                type="error"
+                class="mr-2"
+                ghost
+                @click="isModalOn = false; isCreateMode = false"
+              >
+                <template #icon>
+                  <n-icon>
+                    <CloseSharp/>
+                  </n-icon>
+                </template>
+                Cancel
+              </n-button>
+
+              <n-button type="success" ghost @click="isModalOn = false; isCreateMode = false">
+                <template #icon>
+                  <n-icon>
+                    <SaveSharp/>
+                  </n-icon>
+                </template>
+
+                Save
+              </n-button>
             </div>
           </template>
 
           <template v-else>
-            <n-checkbox v-model:checked="todoItem.isDone" class="mb-2">
-              {{ todoItem.text }}
-            </n-checkbox>
-          </template>
-        </div>
+            <div class="ph-row justify-end">
+              <n-button type="info" ghost @click="isModalOn = false">
+                <template #icon>
+                  <n-icon>
+                    <ArrowBackIosSharp/>
+                  </n-icon>
+                </template>
 
-        <template v-if="isEditMode" #footer>
-          <div class="ph-row align-center">
-            <div class="ph-col md11">
-              <n-input
-                v-model:value="newTodoItem.text"
-                type="text"
-                size="small"
-                placeholder="Add new todo item..."
-              />
-            </div>
-
-            <div class="ph-col md1">
-              <n-button text type="success" @click="addNewTodoItem">
-                <n-icon size="20">
-                  <PlusSharp/>
-                </n-icon>
+                Back
               </n-button>
             </div>
-          </div>
+          </template>
         </template>
       </n-card>
     </n-modal>
