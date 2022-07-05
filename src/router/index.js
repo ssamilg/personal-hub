@@ -30,6 +30,11 @@ const routes = [
     name: 'Fun',
     component: () => import('../modules/Fun/index.vue'),
   },
+  {
+    path: '/todo',
+    name: 'Todo',
+    component: () => import('../modules/Todo/index.vue'),
+  },
 ];
 
 const router = createRouter({
