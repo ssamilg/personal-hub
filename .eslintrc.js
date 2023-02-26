@@ -15,5 +15,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'arrow-body-style': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'no-use-before-define': ['error', { 'functions': false, 'classes': false, 'variables': false }],
   },
 };

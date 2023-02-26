@@ -24,25 +24,46 @@ export default {
       dashboardCards: [
         {
           id: 0,
-          name: 'Finance',
+          title: 'Finance',
+          name: 'finance',
           icon: 'AccountBalanceSharp',
           action: () => { router.push('/Finance'); },
         },
         {
           id: 1,
-          name: 'Fun',
+          name: 'fun',
+          title: 'Fun',
           icon: 'AutoAwesomeMosaicSharp',
           action: () => { router.push('/Fun'); },
         },
-        { id: 2, name: 'TODO\'s', icon: 'ChecklistSharp' },
-        { id: 3, name: 'Projects', icon: 'AppsSharp' },
-        { id: 4, name: 'Tools', icon: 'BuildSharp' },
-        { id: 5, name: 'lul' },
-        { id: 6, name: 'lol' },
+        {
+          id: 2,
+          title: 'TODO\'s',
+          name: 'todo',
+          icon: 'ChecklistSharp',
+        },
+        {
+          id: 3,
+          title: 'Projects',
+          name: 'Projects',
+          icon: 'AppsSharp',
+        },
+        {
+          id: 4,
+          title: 'Tools',
+          name: 'Tools',
+          icon: 'BuildSharp',
+        },
+        { id: 5, title: 'lul', name: 'lul' },
+        { id: 6, title: 'lol', name: 'lol' },
       ],
     });
 
-    return { ...toRefs(state) };
+    const navigateToCard = (cardName) => {
+      router.push(`/${cardName}`);
+    };
+
+    return { ...toRefs(state), navigateToCard };
   },
 };
 </script>
@@ -54,7 +75,7 @@ export default {
         v-for="card in dashboardCards" :key="card.id"
         class="ph-col xs12 md3"
       >
-        <n-card class="ma-1" @click="card.action()">
+        <n-card class="ma-1" @click="navigateToCard(card.name)">
           <div class="ph-row align-center">
             <div class="ph-col pr-3">
               <n-icon size="36">
@@ -67,7 +88,7 @@ export default {
                 CARD {{ card.id }}
               </div>
 
-              {{ card.name }} Card
+              {{ card.title }} Card
             </div>
           </div>
         </n-card>

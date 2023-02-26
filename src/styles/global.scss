@@ -30,6 +30,11 @@ $dark-border: rgba(255, 255, 255, 0.2);
   transition: text-decoration 5s;
 }
 
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 // FLEX HELPERS
 .flex-grow {
   flex-grow: 1;
