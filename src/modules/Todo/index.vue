@@ -14,6 +14,7 @@ import {
 } from '@vicons/material';
 import { reactive, toRefs } from '@vue/reactivity';
 import { onMounted } from '@vue/runtime-core';
+// import isMobile from '@/plugins/isMobile';
 
 export default {
   name: 'Todo',
@@ -29,6 +30,7 @@ export default {
     CheckBoxOutlineBlankSharp,
   },
   setup() {
+    // console.log(isMobile);
     const store = useStore();
     const { showAlertMessage } = useAlertMessage();
     const state = reactive({
@@ -56,6 +58,14 @@ export default {
       },
     });
 
+    onMounted(() => {
+      fetchTodos();
+    });
+
+    // const modalWidth = computed(() => {
+    //   return isMobile ? '75%' : '50%';
+    // });
+
     const fetchTodos = () => {
       state.isLoading = true;
 
@@ -74,10 +84,6 @@ export default {
           state.isLoading = false;
         });
     };
-
-    onMounted(() => {
-      fetchTodos();
-    });
 
     const createNewTodo = () => {
       state.selectedTodo = state.newTodo;
@@ -124,12 +130,28 @@ export default {
       state.selectedTodo.items.splice(state.selectedTodo.items.indexOf(todoItem), 1);
     };
 
+    const saveNewTodoItem = () => {
+      state.todos.push(state.newTodo);
+      state.isModalOn = false;
+      state.isCreateMode = false;
+
+      state.newTodo = {
+        id: '0',
+        name: 'My Todo',
+        items: [{
+          text: 'Create a todo !',
+          isDone: true,
+        }],
+      };
+    };
+
     return {
       ...toRefs(state),
       selectTodo,
       createNewTodo,
       addNewTodoItem,
       removeTodoItem,
+      saveNewTodoItem,
       CheckBoxOutlined,
       CheckBoxOutlineBlankSharp,
     };
@@ -246,39 +268,37 @@ export default {
         <div
           v-for="(todoItem, index) in selectedTodo.items"
           :key="index"
-          class="ph-row card-text-item"
+          class="ph-row align-center mb-1 card-text-item"
         >
-          <div class="ph-row align-center mb-1">
-            <div class="ph-col md1">
-              <n-checkbox v-model:checked="todoItem.isDone"/>
+          <div class="ph-col md1">
+            <n-checkbox v-model:checked="todoItem.isDone"/>
+          </div>
+
+          <template v-if="isEditMode">
+            <div class="ph-col md10">
+              <n-input
+                v-model:value="todoItem.text"
+                type="text"
+                size="small"
+                placeholder="Name"
+                :disabled="!isEditMode"
+              />
             </div>
 
-            <template v-if="isEditMode">
-              <div class="ph-col md10">
-                <n-input
-                  v-model:value="todoItem.text"
-                  type="text"
-                  size="small"
-                  placeholder="Name"
-                  :disabled="!isEditMode"
-                />
-              </div>
+            <div class="ph-col md1">
+              <n-button text type="error" @click="removeTodoItem(todoItem)">
+                <n-icon size="20">
+                  <MinusSharp/>
+                </n-icon>
+              </n-button>
+            </div>
+          </template>
 
-              <div class="ph-col md1">
-                <n-button text type="error" @click="removeTodoItem(todoItem)">
-                  <n-icon size="20">
-                    <MinusSharp/>
-                  </n-icon>
-                </n-button>
-              </div>
-            </template>
-
-            <template v-else>
-              <div class="ph-col md11">
-                {{ todoItem.text }}
-              </div>
-            </template>
-          </div>
+          <template v-else>
+            <div class="ph-col md11">
+              {{ todoItem.text }}
+            </div>
+          </template>
 
           <!-- <template v-else>
             <n-checkbox v-model:checked="todoItem.isDone" class="mb-2">
@@ -329,7 +349,7 @@ export default {
                 Cancel
               </n-button>
 
-              <n-button type="success" ghost @click="isModalOn = false; isCreateMode = false">
+              <n-button type="success" ghost @click="saveNewTodoItem">
                 <template #icon>
                   <n-icon>
                     <SaveSharp/>
