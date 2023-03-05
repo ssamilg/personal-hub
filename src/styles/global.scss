@@ -6,19 +6,6 @@ $n-error: #E57272;
 $n-info: #66AFD3;
 $dark-border: rgba(255, 255, 255, 0.2);
 
-// CUSTOM ROW-COL
-.ph-row {
-  display: flex;
-  flex-direction: row;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.ph-col {
-  display: flex;
-  flex-direction: column;
-}
-
 // CUSTOM HELPERS
 .text-link {
   cursor: pointer;

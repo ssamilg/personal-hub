@@ -46,7 +46,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <PHNavbar v-if="isLoggedIn"/>
     <router-view/>
   </div>
@@ -58,19 +58,5 @@ export default defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
-  // background: rgba(#8DCECC, .5);
-  // background: black;
-
-  .n-layout {
-    &-header {
-      height: 5vh;
-      // background: rgba(#8DCECC, .7);
-    }
-
-    &-content {
-      height: 95vh;
-      // background: rgba(#8DCECC, .5);
-    }
-  }
 }
 </style>
