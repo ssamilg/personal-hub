@@ -1,23 +1,10 @@
 <script>
 import { useRouter } from 'vue-router';
 import { reactive, toRefs } from '@vue/reactivity';
-import {
-  AppsSharp,
-  BuildSharp,
-  ChecklistSharp,
-  AccountBalanceSharp,
-  AutoAwesomeMosaicSharp,
-} from '@vicons/material';
+import { onMounted } from 'vue';
 
 export default {
   name: 'PHDashboard',
-  components: {
-    AppsSharp,
-    BuildSharp,
-    ChecklistSharp,
-    AccountBalanceSharp,
-    AutoAwesomeMosaicSharp,
-  },
   setup() {
     const router = useRouter();
     const state = reactive({
@@ -54,9 +41,10 @@ export default {
           name: 'Tools',
           icon: 'BuildSharp',
         },
-        { id: 5, title: 'lul', name: 'lul' },
-        { id: 6, title: 'lol', name: 'lol' },
       ],
+    });
+    onMounted(() => {
+      navigateToCard('books');
     });
 
     const navigateToCard = (cardName) => {
@@ -78,9 +66,7 @@ export default {
         <n-card class="ma-1" @click="navigateToCard(card.name)">
           <div class="ph-row align-center">
             <div class="ph-col pr-3">
-              <n-icon size="36">
-                <component :is="card.icon"/>
-              </n-icon>
+              LOL
             </div>
 
             <div class="ph-col">

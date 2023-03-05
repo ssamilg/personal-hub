@@ -1,7 +1,6 @@
 <script>
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { DarkModeFilled, DarkModeOutlined, LogOutOutlined } from '@vicons/material';
 import {
   computed,
   defineComponent,
@@ -11,11 +10,6 @@ import {
 
 export default defineComponent({
   name: 'PHNavbar',
-  components: {
-    LogOutOutlined,
-    DarkModeFilled,
-    DarkModeOutlined,
-  },
   setup() {
     const store = useStore();
     const router = useRouter();

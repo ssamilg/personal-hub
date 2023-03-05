@@ -6,13 +6,10 @@ import {
   onMounted,
   reactive,
   toRefs,
-  watch,
 } from 'vue';
 import { getAuth } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import PHNavbar from '@/components/PHNavbar.vue';
-import { darkTheme } from 'naive-ui';
-import DarkThemeVariables from '@/styles/darkThemeVariables';
 
 export default defineComponent({
   components: { PHNavbar },
@@ -40,46 +37,22 @@ export default defineComponent({
       store.dispatch('setUserId', userId);
     }
 
-    watch(() => store.state.darkTheme,
-      () => {
-        if (store.state.darkTheme) {
-          state.theme = darkTheme;
-        } else {
-          state.theme = null;
-        }
-      });
-
     const isLoggedIn = computed(() => {
       return store.state.isLoggedIn;
     });
-    return { ...toRefs(state), isLoggedIn, DarkThemeVariables };
+    return { ...toRefs(state), isLoggedIn };
   },
 });
 </script>
 
 <template>
-  <n-config-provider
-    :theme="theme"
-    :theme-overrides="DarkThemeVariables"
-    class="fill-height"
-  >
-    <n-message-provider placement="top-right">
-      <n-layout position="absolute">
-        <n-layout-header v-if="isLoggedIn">
-          <PHNavbar/>
-        </n-layout-header>
-
-        <n-layout-content>
-          <router-view/>
-        </n-layout-content>
-      </n-layout>
-    </n-message-provider>
-  </n-config-provider>
+  <div>
+    <PHNavbar v-if="isLoggedIn"/>
+    <router-view/>
+  </div>
 </template>
 
 <style lang="scss">
-@use 'styles/global' as global;
-
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

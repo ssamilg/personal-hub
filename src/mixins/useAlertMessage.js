@@ -1,8 +1,6 @@
-import { useMessage, NAlert } from 'naive-ui';
-import { h, reactive } from 'vue';
+import { reactive } from 'vue';
 
 export default function () {
-  const message = useMessage();
   const defaultMessageProps = reactive({
     title: 'Attention !',
     closable: true,
@@ -20,24 +18,9 @@ export default function () {
     messageProps = value;
   };
 
-  const renderMessage = (props) => {
-    const { type } = props;
-
-    return h(NAlert, {
-      ...props,
-      type: type === 'loading' ? 'default' : type,
-      ...messageProps && messageProps,
-    },
-    {
-      default: () => props.content,
-    });
-  };
-
   const showAlertMessage = (type, content) => {
     messageProps.title = `${type.charAt(0).toUpperCase()}${type.slice(1, type.length)}`;
-    message[type](content, { render: renderMessage });
-
-    // setMessageProps(null);
+    console.log(content);
   };
 
   return { setMessageProps, showAlertMessage };
