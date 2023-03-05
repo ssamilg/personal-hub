@@ -39,45 +39,26 @@ export default {
 
 <template>
   <div id="register-page">
-    <div class="ph-row justify-center align-center fill-height">
-      <div class="ph-col xs10 md6 lg3 form-card">
-        <n-card title="Register" size="huge">
-          <div class="ph-row justify-center align-center fill-height mb-2">
-            <n-input v-model:value="name" type="text" size="large" placeholder="Name"/>
-          </div>
+    <div class="flex flex-row justify-center items-center h-full">
+      <div class="basis-1/3">
+        <div class="card w-100 bg-base-300 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">Register</h2>
+            
+            <input v-model="name" type="text" placeholder="Name" class="input w-full mt-2" />
+            <input v-model="surname" type="text" placeholder="Surname" class="input w-full" />
+            <input v-model="email" type="text" placeholder="E-mail" class="input w-full" />
+            <input v-model="password" type="password" placeholder="Password" class="input w-full" />
 
-          <div class="ph-row justify-center align-center fill-height mb-2">
-            <n-input v-model:value="surname" type="text" size="large" placeholder="Surname"/>
-          </div>
-
-          <div class="ph-row justify-center align-center fill-height mb-2">
-            <n-input v-model:value="email" type="text" size="large" placeholder="E-mail"/>
-          </div>
-
-          <div class="ph-row justify-center align-center fill-height mb-2">
-            <n-input
-              v-model:value="password"
-              size="large"
-              type="password"
-              show-password-on="mousedown"
-              placeholder="Password"
-            />
-          </div>
-
-          <div class="ph-row fill-block">
-            <div class="ph-col flex-grow">
-              <n-button type="primary" size="large" @click="submit">
-                Register
-              </n-button>
+            <div class="card-actions mt-2">
+              <button class="btn btn-primary btn-block" @click="submit">Register</button>
             </div>
-          </div>
 
-          <div class="ph-row justify-center fill-block mt-2">
             <div class="text-link" @click="$router.push('/Login')">
               Already have an account ? Click to Login.
             </div>
           </div>
-        </n-card>
+        </div>
       </div>
     </div>
   </div>
