@@ -39,8 +39,8 @@ export default {
           <div class="card-body">
             <h2 class="card-title">Login</h2>
             
-            <input v-model="email" type="text" placeholder="E-mail" class="input w-full mt-2" />
-            <input v-model="password" type="password" placeholder="Password" class="input w-full" />
+            <input v-model="email" type="text" placeholder="E-mail" class="input input-bordered input-primary w-full mt-2" />
+            <input v-model="password" type="password" placeholder="Password" class="input input-bordered input-primary w-full" />
 
             <div class="card-actions mt-2">
               <button class="btn btn-primary btn-block" @click="login">Login</button>

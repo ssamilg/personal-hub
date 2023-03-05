@@ -45,10 +45,10 @@ export default {
           <div class="card-body">
             <h2 class="card-title">Register</h2>
             
-            <input v-model="name" type="text" placeholder="Name" class="input w-full mt-2" />
-            <input v-model="surname" type="text" placeholder="Surname" class="input w-full" />
-            <input v-model="email" type="text" placeholder="E-mail" class="input w-full" />
-            <input v-model="password" type="password" placeholder="Password" class="input w-full" />
+            <input v-model="name" type="text" placeholder="Name" class="input input-bordered input-primary w-full mt-2" />
+            <input v-model="surname" type="text" placeholder="Surname" class="input input-bordered input-primary w-full" />
+            <input v-model="email" type="text" placeholder="E-mail" class="input input-bordered input-primary w-full" />
+            <input v-model="password" type="password" placeholder="Password" class="input input-bordered input-primary w-full" />
 
             <div class="card-actions mt-2">
               <button class="btn btn-primary btn-block" @click="submit">Register</button>
