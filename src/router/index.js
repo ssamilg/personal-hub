@@ -20,20 +20,25 @@ const routes = [
     name: 'Register',
     component: () => import('../views/Register.vue'),
   },
+  // {
+  //   path: '/finance',
+  //   name: 'Finance',
+  //   component: () => import('../modules/Finance/index.vue'),
+  // },
+  // {
+  //   path: '/todo',
+  //   name: 'Todo',
+  //   component: () => import('../modules/Todo/index.vue'),
+  // },
   {
-    path: '/finance',
-    name: 'Finance',
-    component: () => import('../modules/Finance/index.vue'),
-  },
-  {
-    path: '/todo',
-    name: 'Todo',
-    component: () => import('../modules/Todo/index.vue'),
+    path: '/books',
+    name: 'Books',
+    component: () => import('../modules/Books/index.vue'),
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
