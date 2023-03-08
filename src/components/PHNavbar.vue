@@ -1,14 +1,13 @@
 <script>
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   name: 'PHNavbar',
   setup() {
     const store = useStore();
     const router = useRouter();
-
     const logout = () => {
       localStorage.removeItem('user-id');
       localStorage.removeItem('auth-token');
@@ -18,8 +17,13 @@ export default defineComponent({
       router.push('/login');
     };
 
+    const selectedModule = computed(() => {
+      return store.state.selectedModule;
+    });
+
     return {
       logout,
+      selectedModule,
     };
   },
 });
@@ -27,7 +31,19 @@ export default defineComponent({
 
 <template>
   <div id="ph-navbar" class="bg-base-300">
-    <div class="flex flex-row w-full justify-end">
+    <div class="flex flex-row w-full">
+      <div class="basis-full">
+        <div class="flex flex-row items-center">
+          <div class="basis-auto mr-2">
+            <div :class="selectedModule.icon" class="text-2xl"/>
+          </div>
+
+          <div class="basis-auto text-xl">
+            {{ selectedModule.title }}
+          </div>
+        </div>
+      </div>
+
       <div class="basis-auto">
         <button class="btn btn-success btn-square" @click="logout">
           <div class="mdi mdi-logout-variant text-2xl"/>

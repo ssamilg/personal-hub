@@ -17,19 +17,16 @@ import {
   collection,
 } from 'firebase/firestore';
 
-// const moduleAuth = {
-//   state: () => {
-
-//   },
-//   mutations: {},
-// };
-
 export default createStore({
   state: {
     auth: {},
     isLoggedIn: false,
     darkTheme: false,
     userId: null,
+    selectedModule: {
+      title: 'Dashboard',
+      icon: 'mdi mdi-view-dashboard',
+    },
   },
   getters: {
     getCurrentUser: (state) => {
@@ -43,14 +40,14 @@ export default createStore({
     setUser(state, value) {
       state.user = value;
     },
-    switchTheme(state) {
-      state.darkTheme = !state.darkTheme;
-    },
     setIsLoggedIn(state, value) {
       state.isLoggedIn = value;
     },
     setUserId(state, value) {
       state.userId = value;
+    },
+    setSelectedModule(state, value) {
+      state.selectedModule = value;
     },
   },
   actions: {
@@ -66,8 +63,8 @@ export default createStore({
     setUserId({ commit }, value) {
       commit('setUserId', value);
     },
-    switchTheme({ commit }) {
-      commit('switchTheme');
+    setSelectedModule({ commit }, value) {
+      commit('setSelectedModule', value);
     },
     registerUserToLocalStorage(_, id, token) {
       localStorage.setItem('user-id', id);
