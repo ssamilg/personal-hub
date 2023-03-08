@@ -1,13 +1,14 @@
 <script>
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 
 export default defineComponent({
   name: 'PHNavbar',
   setup() {
     const store = useStore();
     const router = useRouter();
+    const { currentRoute } = router;
     const logout = () => {
       localStorage.removeItem('user-id');
       localStorage.removeItem('auth-token');
@@ -21,6 +22,16 @@ export default defineComponent({
       return store.state.selectedModule;
     });
 
+    watch(
+      () => currentRoute,
+      () => {
+        if (currentRoute.value.path === '/') {
+          store.dispatch('setSelectedModule', { title: 'Dashboard', icon: 'mdi mdi-view-dashboard' });
+        }
+      },
+      { deep: true }
+    );
+
     return {
       logout,
       selectedModule,
@@ -33,7 +44,7 @@ export default defineComponent({
   <div id="ph-navbar" class="bg-base-300">
     <div class="flex flex-row w-full">
       <div class="basis-full">
-        <div class="flex flex-row items-center">
+        <div class="flex flex-row items-center font-bold">
           <div class="basis-auto mr-2">
             <div :class="selectedModule.icon" class="text-2xl"/>
           </div>
