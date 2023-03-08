@@ -1,4 +1,5 @@
 <script>
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { reactive, toRefs } from '@vue/reactivity';
 import { onMounted } from 'vue';
@@ -6,49 +7,34 @@ import { onMounted } from 'vue';
 export default {
   name: 'PHDashboard',
   setup() {
+    const store = useStore();
     const router = useRouter();
     const state = reactive({
       dashboardCards: [
         {
           id: 0,
-          title: 'Finance',
-          name: 'finance',
-          icon: 'AccountBalanceSharp',
-          action: () => { router.push('/Finance'); },
+          title: 'Books',
+          route: 'books',
+          description: 'Manage your books',
+          icon: 'mdi mdi-book-open-page-variant',
+          action: () => { router.push('/books'); },
         },
         {
           id: 1,
-          name: 'fun',
-          title: 'Fun',
-          icon: 'AutoAwesomeMosaicSharp',
-          action: () => { router.push('/Fun'); },
-        },
-        {
-          id: 2,
           title: 'TODO\'s',
-          name: 'todo',
-          icon: 'ChecklistSharp',
-        },
-        {
-          id: 3,
-          title: 'Projects',
-          name: 'Projects',
-          icon: 'AppsSharp',
-        },
-        {
-          id: 4,
-          title: 'Tools',
-          name: 'Tools',
-          icon: 'BuildSharp',
+          route: 'todo',
+          description: 'Todo list manager for your daily tasks',
+          icon: 'mdi mdi-checkbox-marked-circle-outline',
         },
       ],
     });
     onMounted(() => {
-      navigateToCard('books');
+      // navigateToCard('books');
     });
 
-    const navigateToCard = (cardName) => {
-      router.push(`/${cardName}`);
+    const navigateToCard = (card) => {
+      store.dispatch('setSelectedModule', { title: card.title, icon: card.icon });
+      router.push(`/${card.route}`);
     };
 
     return { ...toRefs(state), navigateToCard };
@@ -58,26 +44,25 @@ export default {
 
 <template>
   <div id="ph-dashboard">
-    <div class="ph-row flex-wrap">
+    <div class="flex flex-row">
       <div
         v-for="card in dashboardCards" :key="card.id"
-        class="ph-col xs12 md3"
+        class="basis-1/4 m-1"
       >
-        <n-card class="ma-1" @click="navigateToCard(card.name)">
-          <div class="ph-row align-center">
-            <div class="ph-col pr-3">
-              LOL
-            </div>
-
-            <div class="ph-col">
-              <div class="ph-row pb-1 card-header">
-                CARD {{ card.id }}
+        <div class="card w-full h-full bg-base-300" @click="navigateToCard(card)">
+          <div class="card-body">
+            <div class="flex flex-row">
+              <div class="basis-full">
+                <h2 class="card-title">{{ card.title }}</h2>
               </div>
 
-              {{ card.title }} Card
+              <div class="basis-auto">
+                <div :class="card.icon" class="text-2xl"/>
+              </div>
             </div>
+            <p>{{ card.description }}</p>
           </div>
-        </n-card>
+        </div>
       </div>
     </div>
   </div>
@@ -89,18 +74,14 @@ export default {
 #ph-dashboard {
   height: 100%;
 
-  .n-card {
+  .card {
     width: inherit;
     cursor: pointer;
+    border: 1px solid hsl(var(--b3));
+    transition: border 0.2s ease-in-out;
 
     &:hover {
-      background-color: rgba($naive-teal, .1);
-    }
-
-    .n-card__content {
-      .card-header {
-        border-bottom: 1px solid $dark-border;
-      }
+      border: 1px solid hsl(var(--su));
     }
   }
 }
