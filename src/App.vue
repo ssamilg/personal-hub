@@ -1,12 +1,6 @@
 <script>
 import { useStore } from 'vuex';
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  toRefs,
-} from 'vue';
+import { computed, defineComponent, onMounted, onRenderTracked } from 'vue';
 import { getAuth } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import PHNavbar from '@/components/PHNavbar.vue';
@@ -18,15 +12,6 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const userId = localStorage.getItem('user-id');
-    const state = reactive({
-      theme: null,
-    });
-
-    onMounted(() => {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches && !store.state.darkTheme) {
-        store.dispatch('switchTheme');
-      }
-    });
 
     store.dispatch('setAuth', auth);
 
@@ -37,10 +22,15 @@ export default defineComponent({
       store.dispatch('setUserId', userId);
     }
 
+    // onMounted(() => {
+    //   console.log('mounted');
+    //   store.dispatch('setSelectedModule', { title: 'Dashboard', icon: 'mdi mdi-view-dashboard' });
+    // });
+
     const isLoggedIn = computed(() => {
       return store.state.isLoggedIn;
     });
-    return { ...toRefs(state), isLoggedIn };
+    return { isLoggedIn };
   },
 });
 </script>
